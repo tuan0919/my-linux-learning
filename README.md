@@ -228,4 +228,116 @@
     ![img](images/Screenshot%20from%202024-08-19%2020-51-17.png)
 
   </details>
+
+- <details>
+  <summary>
+  <b>File System Structure and its Description</b>
+  </summary>
+
+  - `/boot`: chứa file được sử dụng bởi bootloader (grub.cfg).
+  - `/root`: thư mục home của user root.
+  - `/dev`: System devices (eg disk, cdroom, speakers, flashdrive, keyboard etc)
+  - `/etc`: Configuration files.
+  - `/bin -> /usr/bin`: Everyday user commands.
+  - `/sbin -> /usr/sbin`: System/filesystem commands.
+  - `/opt`: optional addons applications (các apps không thuộc về OS).
+  - `/proc`: Chứa các file, thư mục cho các process đang chạy (bị xóa khi shutdown).
+  - `/lib -> /usr/lib`: các file thư viện được viết bằng C cần thiết cho các commands hoặc apps.
+  - `/tmp`: thư mục chứa các file tempory.
+  - `/home`: thư mục home của user.
+  - `/var`: logs của hệ thống.
+  - `/run`: các daemons hệ thống chạy rất sớm (e.g systemd và udev) để chứa các file tempory runtime như các file PID.
+  - `/mnt`: dùng để mount external filesystem. (e.g NFS)
+  - `/media`: dùng để mount cdrom.
+
+  </details>
+
+- <details>
+  <summary>
+  <b>Navigating File System</b>
+  </summary>
+  
+  Để di chuyển trong UNIX FileSystem, có một số command **quan trọng** cần phải nhớ:
+  - `cd - Change Directory`: chuyển thư mục
+  - `pwd - Print Working Directory`: Cho biết vị trí hiện tại
+  - `ls - listing`: List content
+    - `ls -a`: List tất cả (List all).
+    - `ls -l`: List đầy đủ thông tin (List long format).
+    - `ls -r`: List theo trật tự ngược lại (List with reverse order).
+    - `ls -t`: List theo thứ tự thời gian (List with time).
+    - `ls -p`: thêm dấu / vào thư mục. (List with indicator-slash)
+    - `ls -R`: xem cả cây thư mục (List recursively)
+  </details>
+
+- <details>
+  <summary>
+  <b>What is root</b>
+  </summary>
+  
+  Có 3 loại `root` trong hệ thống Linux mà ta cần phân biệt:
+  - Root account: Là một account hay một username trên hệ thống Linux có quyền hạn lớn nhất, được access vào toàn bộ command và file.
+  - Thư mục root `/`: Là thư mục đầu tiên trong Linux và còn được biết đến là **root directory** (Lưu ý: đây không phải thư mục user của root).
+  - Root home directory: Là thư mục home của user `root`, nằm ở đường dẫn `/root`
+  </details>
+
+- <details>
+  <summary>
+  <b>Creating files and directories</b>
+  </summary>
+  
+  - Tạo file:
+    - `touch`: tạo file trống.
+    - `cp`: copy file.
+      - `cp -R`: copy đệ quy (copy recursively).
+    - `vi`: tạo file với trình soạn vi.
+  - Tạo thư mục:
+    - `mkdir`: tạo thư mục (make directory).
+      - `mkdir -p`: tạo cả cây thư mục (make directory parent).
+  </details>
+
+- <details>
+  <summary>
+  <b>Linux File Types</b>
+  </summary>
+
+  | Kí hiệu file | Ý nghĩa                     |
+  |--------------|-----------------------------|
+  | -            | Regular file                |
+  | d            | Directory                   |
+  | l            | link                        |
+  | c            | special file or device file |
+  | s            | socket                      |
+  | p            | Named pipe                  |
+  | b            | block device                |
+  </details>
+
+- <details>
+  <summary>
+  <b>Find files and directories</b>
+  </summary>
+
+  Hai lệnh được sử dụng để tìm kiếm file/thư mục:
+  - `find`: Tìm kiếm tài nguyên.
+    - `find <from_where> -name <search>`: Tìm kiếm tài nguyên theo tên tại from_where.
+    - `find <from_where> -type [f | d]`: Tìm kiếm tài nguyên là file (`f`) hoặc thư mục (`d`)
+  - `locate`: Tìm kiếm tài nguyên, nhưng là sử dụng cơ sở dữ liệu được lập chỉ mục trước (thường là `/var/lib/mlocate/mlocate.db`) nên rất nhanh.
+    - `updatedb`: cập nhật cơ sở dữ liệu chỉ mục.
+  </details>
+
+- <details>
+  <summary>
+  <b>Wildcards</b>
+  </summary>
+
+  Wildcards là các kí tự đặc biệt có thể sử dụng để đại diện cho một lớp các kí tự trong các câu lệnh tìm kiếm.
+
+  - `*`: Đại diện cho 0 hoặc nhiều hơn 1 kí tự.
+  - `?`: Đại diện cho một kí tự bất kì.
+  - `[]`: Đại diện cho một tập hợp các ký tự đơn lẻ mà bạn muốn khớp.
+  - `{}`: Đại diện cho một tập hợp các từ hoặc chuỗi (có thể sử dụng để tạo nhiều file)
+
+  Ví dụ:
+  - `rm abc*`: xóa tất cả các tài nguyên bắt đầu với `abc`.
+  - `touch abc{1..9}-xyz`: tạo 9 file `abc{1 -> 9}-xyz`.
+  </details>
 </details>
