@@ -185,3 +185,47 @@
   Một lưu ý về thuật ngữ hệ điều hành: khoa học máy tính thường phân biệt giữa swapping (ghi toàn bộ quá trình ra không gian swap) và paging (chỉ ghi các phần có kích thước cố định, thường là vài kilobyte, tại một thời điểm). Paging thường hiệu quả hơn, và đó là những gì Linux thực hiện, nhưng thuật ngữ truyền thống của Linux vẫn nói về swapping.
   </details>
 </details>
+
+<details>
+<summary>
+<b>Module 2 - Install VMWare</b>
+</summary>
+
+*Chưa có gì phải ghi chú ở đây*
+</details>
+
+<details>
+<summary>
+<b>Module 3 - System Access And File System</b>
+</summary>
+
+- <details>
+  <summary>
+  <b>Important things to remember in Linux</b>
+  </summary>
+  
+  - Linux có một super-user gọi là **root**.
+    - root là account có quyền mạnh nhất có thể tạo, chỉnh sửa, xóa các account khác và thay đổi file system của hệ thống.
+  - Linux là case-sentitive
+    - **ABC** khác với **abc**
+  - Linux Kernel không phải là hệ điều hành. Nó là một "chương trình" nhỏ bên trong hệ điều hành Linux sẽ nhận command từ user và pass chúng vào phần cứng hệ thống.
+  - Linux phần lớn sử dụng CLI, không phải GUI.
+  - Linux rất flexible khi so với các hệ điều hành khác.
+  </details>
+
+- <details>
+  <summary>
+  <b>Linux File System</b>
+  </summary>
+  
+  - File System là một phần mềm hoặc hệ thống được sử dụng để quản lý, tổ chức và lưu trữ dữ liệu trên các thiết bị lưu trữ như đĩa cứng, ổ đĩa USB hoặc thẻ nhớ
+  - OS lưu trữ dữ liệu trên ổ đĩa sử dụng một cấu trúc gọi là File System, bao gồm các file, thư mục, và các thông tin cần thiết để truy cập và định vị chúng.
+  - Có nhiều loại filesystem khác nhau. Về cơ bản, có nhiều sự cải tiến đối với file system khi ra mắt các hệ điều hành mới, và mỗi file system được đặt một tên khác nhau:
+    - E.g ext3, ext4, XFS, NTFS, FAT, etc.
+  - Linux filesystem lưu trữ thông tin trong các thư mục phân cấp và file.
+    - Filesystem của Linux trông như thế này:
+  
+    ![img](images/Screenshot%20from%202024-08-19%2020-51-17.png)
+
+  </details>
+</details>
