@@ -425,4 +425,33 @@
   
   Tham số có thể là tùy chọn hoặc bắt buộc, tùy thuộc vào command.
   </details>
+
+- <details>
+  <summary>
+  <b>File Permissions</b>
+  </summary>
+
+  - UNIX là hệ thống hỗ trợ đa người dùng. Mỗi file và thư mục trong account của chúng ta có thể được bảo vệ khỏi việc bị truy cập bởi các người dùng khác bằng cách thay đổi `access permission`. Mỗi người dùng có trách nhiệm tự quản lí quyền truy cập file của họ.
+
+  - Quyền cho tài nguyên có thể bị giới hạn bởi loại của tài nguyên đó.
+  - Có 3 loại permission:
+    -  `r`: read
+    -  `w`: write
+    -  `x`: execute
+  - Mỗi quyền (rwx) có thể được kiểm soát ở 3 mức độ:
+
+    - `u`: - user
+    - `g`: - group
+    - `o`: - other users.
+  
+  - Quyền của file và thư mục có thể được hiển thị bằng lệnh `ls -l`
+  
+    - `rwxrwxrwx`: 3 bit đầu thể hiện quyền dành cho `user`, 3 bit tiếp theo thể hiện quyền dành cho `group` và 3 bit cuối cùng thể hiện quyền dành cho `other`.
+  
+  ![img](images/Screenshot%20from%202024-08-20%2014-48-38.png)
+  
+  - Lệnh thay đổi quyền: `chmod`
+    - `chmod g-w`: xóa quyền `write` đối với group.
+    - `chmod g+w`: thêm quyền `write` đối với group.
+  </details>
 </details>
