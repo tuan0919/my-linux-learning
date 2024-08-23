@@ -942,7 +942,7 @@
   <b>Process and Threads (In details, theory)</b>
   </summary>
 
-  ### Mở đầu
+  ## Mở đầu
   Để có thể có cái nhìn rõ hơn về các section tiếp theo, chúng ta cần phải có cái nhìn bao quát nhất định về mối quan hệ giữa thread và process. Có rất nhiều blog trên mạng giải thích về vấn đề này, nhưng đa số trong đó đọc **không thể hiểu nổi** vì quá lí thuyết, đây là vấn đề khó khăn vì Threads và Process là các khái niệm về bản chất đã rất trừu trượng của hệ điều hành. May mắn là, có một [bài viết](https://www.qnx.com/developers/docs/6.4.1/neutrino/getting_started/s1_procs.html#Threads_and_processes) giải thích khá dễ hiểu hai khái niệm này, và Section này sẽ **dịch lại bài viết đó**.
   
   ## Process and Threads
@@ -1061,8 +1061,90 @@
   
   Phép ẩn dụ về ngôi nhà thực sự rất tuyệt vời để truyền tải khái niệm về đồng bộ hóa, nhưng nó có một điểm hạn chế lớn. Trong ngôi nhà của chúng ta, có nhiều luồng (threads) chạy đồng thời. Tuy nhiên, trong một hệ thống thực tế, thường chỉ có một CPU, vì vậy chỉ có một "thứ" có thể chạy tại một thời điểm.
 
-  ### Một CPU
-  
+  ### Một CPU đơn lẻ
 
+  Hãy xem xét những gì diễn ra ở thực tế, và đặc biệt là trong trường hợp "kinh tế" khi chúng ta chỉ có một CPU trong hệ thống. Trong trường hợp này, vì chỉ có một CPU hiện diện, chỉ có một thread có thể chạy ở bất kì thời điểm nào. Kernel sẽ quyết định (sử dụng một số luật, mà chúng ta sẽ xem xét sơ bộ) thread nào sẽ được chạy, và chạy nó.
+
+  ### Nhiều CPU (SMP)
+
+  Nếu bạn mua một hệ thống có nhiều CPU giống nhau, tất cả đều chia sẻ bộ nhớ và các thiết bị, bạn sẽ có một SMP (SMP viết tắt của Symmetrical Multi Processor, với "symmetrical" chỉ ra rằng tất cả các CPU trong hệ thống đều giống nhau). Trong trường hợp này, số lượng thread có thể chạy đồng thời bị giới hạn bởi số lượng CPU. (Thực tế, điều này cũng đúng với hệ thống có một CPU duy nhất!) Vì mỗi CPU chỉ có thể thực thi một thread tại một thời điểm, nên với nhiều CPU, nhiều thread có thể thực thi đồng thời.
+
+  Hãy tạm thời bỏ qua số lượng CPU có trong hệ thống — một cách trừu tượng hữu ích là thiết kế hệ thống như thể nhiều thread thực sự đang chạy đồng thời, ngay cả khi điều đó không hoàn toàn chính xác. Trong phần ["Những điều cần lưu ý khi sử dụng SMP"](https://www.qnx.com/developers/docs/6.4.1/neutrino/getting_started/s1_procs.html#smpbeware), chúng ta sẽ thấy một số tác động không trực quan của SMP.
+
+  ### Kernel như là một trọng tài
+
+  Vậy ai là người quyết định thread nào sẽ được chạy tại một thời điểm? Đó là nhiệm vụ của kernel.
+
+  Một kernel sẽ quyết định thread nào sẽ sử dụng CPU tại một thời điểm cụ thể, và *chuyển ngữ cảnh* (context) sang thread đó. Hãy phân tích Kernel làm gì với CPU.
+
+  Một CPU có một số lượng các thanh ghi (số lượng chính xác dựa vào processor family). Khi một thread đang chạy, thông tin sẽ được lưu trữ vào các thanh ghi đó (chẳng hạn, vị trí của chương trình).
+
+  Khi mà kernel quyết định một thread khác nên được chạy, nó sẽ cần:
+  
+  - Lưu lại các thanh ghi của thread đang chạy và các thông tin context khác.
+  - Tải các thanh ghi của thread mới và context của thread đó vào CPU.
+  
+  Nhưng làm thế nào mà kernel quyết định rằng một thread nên chạy? Nó xem xét liệu một thread cụ thể có khả năng sử dụng CPU vào thời điểm hiện tại hay không. Ví dụ, khi chúng ta nói về mutex, chúng ta đã giới thiệu cơ chế blocking state (điều này xảy ra khi một thread sở hữu mutex và một thread khác cũng muốn lấy nó; thread thứ hai sẽ bị chặn).
+
+  Theo cách nhìn nhận của kernel, vì thế, chúng ta có một thread *có thể* tiêu thụ CPU và một thread *không thể*, bởi vì nó bị block và đang chờ mutex. Trong trường hợp này, kernel sẽ để thread có thể chạy tiêu thụ CPU, và đặt list còn lại vào một danh sách nội bộ (nhờ đó kernel có thể theo dõi yêu cầu của nó đối với mutex).
+
+  Rõ ràng đó không phải là một tình huống thú vị. Giả sử rằng có một số lượng các threads *có thể* sử dụng CPU. Nhớ rằng chúng ta ủy quyền việc truy cập vào mutex dựa vào **độ ưu tiên** và **thời gian chờ đợi**? Kernel sử dụng một cơ chế tương tự đễ quyết định xem thread nào sẽ được chạy tiếp theo. Có hai yếu tố: *độ ưu tiên* và *thuật toán lập lịch*, được đánh giá theo thứ tự đó.
+
+  #### Độ ưu tiên
+
+  Xem xét hai threads có khả năng sử dụng CPU. Nếu các threads này có độ ưu tiên khác nhau, thì câu trả lời khá đơn giản - kernel đưa CPU cho thread có độ ưu tiên cao hơn, như cái cách chúng ta đã nói đến trong trường hợp nhận mutex. Lưu ý là độ ưu tiên 0 được dự trù cho idle thread - bạn không thể sử dụng nó.
+
+  Nếu một thread khác với độ ưu tiên cao hơn bỗng dưng có khả năng cần phải sử dụng CPU, kernel sẽ ngay lập tức context-switch đến thread có độ ưu tiên cao hơn. Chúng ta gọi cơ chế này là *preemption* (quyền ưu tiên) - thread có độ ưu tiên cao hơn sẽ chiếm quyền của thread có độ ưu tiên thấp hơn. Khi mà thread có quyền ưu tiên cao hơn hoàn thành, và kernel context thực hiện context-switch lại cho thread có độ ưu tiên thấp hơn đang chạy trước đó, chúng ta gọi cơ chế này là *resumption* (nối lại) - kernel tiếp tục chạy thread trước đó.
+
+  Bây giờ, gải sử rằng hai thread có khả năng sử dụng CPU có cùng một độ ưu tiên.
+
+  #### Thuật toán lập lịch
+
+  Hãy giả sử rằng, một trong các thread đang sử dụng CPU. Chúng ta sẽ nghiên cứu các luật mà kernel sử dụng để quyết định context-switch trong trường hợp này. (Tất nhiên, toàn bộ quá trình này thật sự áp dụng cho các threads có cùng một độ ưu tiên - nếu *trong một khoảng khắc*, nếu mọt thread *có độ ưu tiên cao hơn*  sẵn sàng để sử dụng CPU, nó sẽ lấy nó; đấy là toàn bộ lí do cho việc có tính ưu tiên trong một hệ điều hành thời gian thực.)
+
+  Hai thuật toán lập lịch (policies) mà Neutrino kernel có thể hiểu là Round Robin (hoặc "RR") và FIFO (First-In, First-Out).
+
+  #### FIFO
+
+  Trong thuật toán lập lịch FIFO, một thread được phép tiêu thụ CPU tronng thời gian mà nó muốn. Điều này có nghĩa là, nếu thread đang thực hiện một tác vụ tính toán toán học cực kì lâu, và không một thread nào khác có quyền cao hơn đang sẵn sàng, thì thread đó có khả năng sẽ *được phép chạy vĩnh viễn*. Vậy còn các threads khác có độ ưu tiên ngang bằng thì sao? Chúng cũng bị chặn luôn (tất nhiên bao gồm cả các thread có độ ưu tiên thấp hơn).
+
+  Nếu thread đang chạy quits hoặc *tự nguyện từ bỏ CPU*. *thì* kernel sẽ tìm kiếm các thread có cùng độ ưu tiên mà có khả năng sẽ sử dụng CPU. Nếu không có thread nào như vcậy, *thì* kernel tìm kiếm các thread có độ ưu tiên thấp hơn có khả năng sử dụng CPU. Lưu ý rằng định nghĩa *tự nguyện từ bỏ CPU* có thể có hai nghĩa. Nếu thread vào trạng thái ngủ, hoặc bị chặn bởi một semaphore, tương tự vậy, thì tất nhiên, các thread có độ ưu tiên thấp hơn có thể chạy (như đã mô tả phía trên). Nhưng cũng có một lệnh gọi "đặc biệt", [sched_yeld()](https://www.qnx.com/developers/docs/6.4.1/neutrino/lib_ref/s/sched_yield.html) (*không cần thiết nhắc đến ở đây*) mà chỉ từ bỏ CPU cho các thread khác có cùng độ ưu tiên -  thread có độ ưu tiên thâp hơn sẽ không bao giờ có cơ hội được chạy nếu một thread có độ ưu tiên cao hơn sẵn sàng được chạy. Nếu một thread thực sự gọi [sched_yeld()](https://www.qnx.com/developers/docs/6.4.1/neutrino/lib_ref/s/sched_yield.html), và không có một thread nào có cùng độ ưu tiên đang sẵn sàng để chạy, thì thread gốc sẽ tiếp tục được chạy. Lời gọi [sched_yeld()](https://www.qnx.com/developers/docs/6.4.1/neutrino/lib_ref/s/sched_yield.html) thực tế được sử dụng để cho phép một thread khác có cùng độ ưu tiên bẻ khóa CPU.
+
+  Ở sơ đồ phía dưới, chúng ta thấy có ba threads đang thực thi trong hai process khác nhau.
+
+  ![img](images/dpt12a.gif)
+  <hr>
+
+  *Ba threads đang chạy trong hai process khác nhau*
+
+  Nếu chúng ta giả sử rằng thread "A" và "B" đang READY, và thread "C" đang bị block (có lẽ là đang chờ mutex), và có một thread D (không được hiển thị) đang được chạy, thì đây sẽ là một phần của hàng đợi READY mà Neutrino Kernel duy trì:
+  <hr>
+
+  ![img](images/dpt12b.gif)
+  <hr>
+
+  *Hai threads trên hàng đợi READY, một bị block, một đang chạy*
+
+  Sơ đồ này cho thấy hàng đợi READY nội bộ của kernel trông như thế nào, đây là thứ kernel sẽ dùng để lập lịch thread tiếp theo. Lưu ý rằng thread "C" không phải là một phần của hàng đợi, bởi vì nó bị block, và thread "D" cũng không nằm trên hàng đợi này vì nó *đang chạy*.
+
+  #### Round Robin
+  Thuật toán lập lịch RR giốntg hệt FIFO, *ngoại trừ việc* thread sẽ không chạy mãi mãi nếu có một thread khác có cùng độ ưu tiên. Nó chỉ chạy trong các khoảng thời gian (*timeslice*) mà hệ thống đã quy định sẵn bằng cách sử dụng các hàm [sched_rr_get_interval()](https://www.qnx.com/developers/docs/6.4.1/neutrino/lib_ref/s/sched_rr_get_interval.html). Timslice thuờng là 4 ms, nhưng nó thực ra là gấp 4 lần *ticksize*, thông số mà có thể được truy vấn hoặc cài đặt với [ClockPeriod()](https://www.qnx.com/developers/docs/6.4.1/neutrino/lib_ref/c/clockperiod.html).
+
+  Những gì sẽ xảy ra là kernel bắt đầu một RR thread, và đánh dấu lại thời gian. Nếu RR Thread chạy được một lúc, thời gian dành cho nó sẽ hết (timeslice hết). Kernel sẽ kiểm tra xem nếu có một thread nào đó khác có cùng một độ ưu tiên đang ready. Nếu có, kernel sẽ chạy nó. Nếu không, kernel sẽ tiếp tục chạy RR thread (tức là kernel cấp cho thread này một timeslice khác).
+
+  ##### Quy tắc
+  
+  Tóm tắt lại quy tắc lập lịch (cho một CPU đơn lẻ), theo thứ tự quan trọng:
+  
+  - Chỉ một thread chạy tại một thời điểm.
+  - Thread có độ ưu tiên cao nhất sẽ chạy.
+  - Thread sẽ chạy cho tới khi nó bị block hoặc exit.
+  - Một RR thread sẽ chạy trong khoảng thời gian nhất định, và sau đó kernel sẽ tái lập lịch cho nó (nếu cần thiết).
+
+  Sơ đồ bên dưới thể hiện các quyết định mà kernel sẽ thực hiện:
+
+  ![img](images/dpt1.gif)
+
+  Đối với hệ thống nhiều CPU, các luật cũng tương tự, ngoại trừ việc nhiều CPU sẽ có thể chạy nhiều thread đồng thời. Thứ tự các thread chạy (các threads nào sẽ chạy trên các CPUs) sẽ được xác định giống hệt với cách quyết định trên một CPU đơn lẻ - thread READY có độ ưu tiên cao nhất sẽ chạy trên một CPU. Khi xử lý các thread có độ ưu tiên thấp hơn hoặc đã chờ đợi lâu, kernel có thể linh hoạt trong việc lập lịch để tránh lãng phí tài nguyên, đặc biệt là bộ nhớ đệm (cache). Kernel sẽ cố gắng tối ưu hóa việc sử dụng bộ nhớ đệm bằng cách sắp xếp các thread sao cho dữ liệu mà các thread này cần đã sẵn có trong cache hoặc dễ dàng truy cập. Điều này giúp giảm thiểu việc cache miss (khi dữ liệu cần thiết không có trong cache) và tăng hiệu quả xử lý của CPU.
   </details>
 </details>
