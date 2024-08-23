@@ -1001,6 +1001,68 @@
   ### Priorities (Độ ưu tiên)
 
   Chuyện gì xảy ra nếu phòng tắm đang bị khóa và có một số lượng người đang chờ để được sử dụng nó ? Tất nhiên, tất cả mọi người sẽ đứng đợi ở bên ngoài, chờ cho bất kì ai đang ở trong phòng tắm đi ra ngoài. Câu hỏi thực sự là, "chuyện gì xảy ra tiếp theo khi cửa mở? Ai sẽ là người vào trong tiếp theo?"
+
+  Bạn có thể sẽ suy luận rằng, sẽ là "công bằng" khi cho người chờ lâu nhất vào tiếp theo. Hoặc có thể sẽ là "công bằng" nếu cho người già nhất, hoặc cao nhất, hoặc quan trọng nhất ... Có rất nhiều cách để định nghĩa thế nào là "công bằng" trong trường hợp này.
+
+  Chúng ta giải quyết vấn đề này với các threads thông qua hai yếu tố: *độ ưu tiên* và *thời gian chờ đợi*.
+
+  Giả sử  hai người đi đến nhà tắm (đang khóa) cùng một lúc. Một trong hai đang bị áp lực về deadline (họ đã trễ trong một cuộc họp) trong khi đó người còn lại thì không. Chẳng phải sẽ có lý nếu chúng ta cho phép người đang gấp được vào trước? Well, tất nhiên là có. Câu hỏi quan trọng duy nhất ở đây là cách chúng ta quyết định ai là người quan trọng. Điều này có thể được thực hiện bằng cách gán một độ ưu tiên (hãy sử dụng một con số kiểu như - 1 là độ ưu tiên thấp nhất và 255 là độ ưu tiên cao nhất). Người đang chờ trong ngôi nhà và đang bị áp lực về deadline sẽ có *số ưu tiên cao hơn*, còn người còn lại sẽ có *số ưu tiên thấp hơn*.
+
+  Điều tương tự xảy ra với threads. Một thread sẽ kế thừa thuật toán lập lịch từ thread parent của nó, nhưng có thể gọi hàm [pthread_setschedparam()](https://www.qnx.com/developers/docs/6.4.1/neutrino/lib_ref/p/pthread_setschedparam.html) để thay đổi chính sách lập lịch và mức độ ưu tiên của nó (nếu nó có quyền làm vậy).
+
+  Nếu một lượng các thread đang chờ, và mutex đã unlocked, chúng ta sẽ đưa mutex cho thread đang chờ có độ ưu tiên cao nhất. Giả sử, bằng cách nào đó, cả hai người có *cùng một độ tiên*. Bây giờ chúng ta sẽ làm gì? Well, trong trường hợp đó, sẽ "công bằng" nếu cho phép người đã chờ lâu hơn được vào tiếp theo. Trong trường hợp có một danh sách các threads đang chờ, thì chúng ta sẽ xét *độ ưu tiên* trước tiên và tiếp là *thời gian chờ đợi*.
+
+  Mutex chắc chắn không phải object đồng bộ hóa duy nhất mà chúng ta gặp phải. Hãy xem xét một vài đối tượng khác.
+
+  ### Semaphores (Cờ hiệu)
   
+  Hãy di chuyển từ phòng tắm đến nhà bếp, vì phòng tắm là địa điểm được xã hội chấp nhận để có nhiều người cùng một lúc. Trong nhà bếp, bạn có thể không muốn có *tất cả mọi ngườ* tại đó cùng một lúc. Thực tế, bạn có lẽ muốn giới hạn số lượng người có thể hiện hữu trong nhà bếp.
+
+  Xem như, bạn không bao giờ muốn có trên hai người trong nhà bếp cùng một lúc. Bạn có thể thực hiện với mutex không? Với cách chúng ta đã định nghĩa phía trên thì không khả thi. Tại sao? Đây thực tế là một vấn đề rất thú vị cho ví dụ của chúng ta. Hãy phân tích nó ra thành các bước sau:
+
+  #### Semaphore với count = 1
+
+  Phòng tắm có thể có một trong hai tình huống, với hai trạng thái có thể đi đôi với nhau:
+
+  - **Phòng tắm không khóa** và **Không có ai**.
+  - **Phòng tắm khóa** và **Có người**.
+  
+  Còn lại không còn cách kết hợp nào khả thi - cửa không thể nào khóa nếu không có ai bên trong (chúng ta sẽ mở khóa như thế nào?), và cửa không thể mở khóa nếu một người đang ở trong phòng tắm (làm sao mà họ có được sự riêng tư nếu làm như vậy?). Đây là một ví dụ của việc semaphore với bộ đếm là một - có nhiều nhất một người trong phòng, hay một thread đang sử dụng semaphore.
+
+  Mấu chốt ở đây là cách chúng ta mô tả ổ khóa. Với ổ khóa thông thường cho phòng tắm, bạn chỉ có thể mở khóa từ bên trong - không có một chìa khóa nào cho phép truy cập từ bên ngoài. Thực tế, điều này có nghĩa là việc sở hữu mutex là một thao tác *atomic* - *Không có khả năng* nào để mà khi bạn đang trong quá trình lấy mutex thì có một thread cũng lấy nó, dẫn đến việc cả hai đều có mutex. Trong ví dụ ngôi nhà của chúng ta, điều này ít rõ ràng hơn vì con người thông minh hơn rất nhiều so với các con số 0 và 1.
+
+  Vì thế, thứ chúng ta cần cho nhà bếp sẽ là một loại ổ khóa khác.
+
+  #### Semaphore với count > 1
+
+  Giả sử bây giờ, chúng ta đã thiết lập *một ổ khóa có chìa* truyền thống cho nhà bếp. Cách hoạt động của ổ này là nếu bạn có chìa khóa, bạn có thể mở cửa và bước vào trong. Bất kì ai sử dụng ổ khóa này sẽ cam kết rằng, khi họ bước vào bên trong, họ sẽ ngay lập tức khóa cửa lại từ bên trong và vì thế bất kì ai bên ngoài bước vào sẽ luôn cần có chìa khóa.
+
+  Well, bây giờ, vấn đề trở nên đơn giản là làm sao để quy định bao nhiều người chúng ta muốn có trong nhà bếp - treo hai cái chìa khóa bên ngoài cửa! Nhà bếp luôn luôn khóa! Khi một người muốn vào nhà bếp, họ sẽ thấy nếu có chìa khóa được treo ngoài đó. Như vậy, họ có thể sử dụng chìa này, mở cửa nhà bếp, đi vào và khóa cửa lại từ bên trong.
+
+  Vì người vào trong bếp phải có chìa khóa, cho nên chúng ta kiểm soát một cách trực tiếp số lượng người được phép vào nhà bếp tại bất kì thời điểm nào bằng cách giới hạn số lượng chìa khóa được treo bên ngoài cửa.
+
+  Với threads, điều này thực hiện thông qua một *semaphore*. Một semaphore "đơn thuần" thì sẽ hoạt động giống như mutex - hoặc là bạn sở hữu nó, nghĩa là bạn đã truy cập vào tài nguyên, hoặc là không sở hữu nó, nghĩa là bạn không truy cập. Semaphore mà chúng ta mô tả trong ví dụ nhà bếp là một *counting semaphore* - nó theo dõi số lượng (bằng số lượng chìa khóa khả dụng cho các threads).
+
+  #### Một semaphore đóng vai trò như là một mutex
+
+  Chúng ta vừa trả lời cho câu hỏi "Bạn có thể thực hiện nó với một mutex?" trong tình huống implement một ổ khóa với bộ đếm, và câu trả lời là không. Vậy còn tình huống ngược lại thì sao? Liệu chúng ta có thể sử dụng semaphore như một mutex?
+  
+  Có. Trong thực tế, trong một số hệ điều hành, đó chính xác là những gì chúng làm - chúng không có mutex, mà chỉ có semaphore! Vậy tại sao phải bận tâm đến mutex làm gì?
+
+  Để trả lời câu hỏi này, nhìn vào ví dụ phòng vệ sinh. Làm thế nào mà người xây dựng ngôi nhà implement "mutex"? Tôi đoán rằng là do bạn không có chìa khóa để treo trên tường!
+
+  Các mutex là **một dạng semaphore cho mục đích đặc biệt**. Nếu bạn muốn muốn chỉ có một thread được phép chạy trên một một phần code nào đó, mutex hiện tại vẫn là cách implement hiệu quả nhất.
+
+  Tiếp theo, chúng ta sẽ tiếp tục xem xét các cơ chế đồng bộ hóa khác - gọi là *condvars*, *barriers* và *sleepons*.
+
+  > Để không bị confuse, hãy nhìn vào việc một mutex có các thuộc tính khác, chẳng hạn như tính kế thừa, và điều này làm nó khác biệt so với một semaphore.
+
+  ## Vai trò của Kernel
+  
+  Phép ẩn dụ về ngôi nhà thực sự rất tuyệt vời để truyền tải khái niệm về đồng bộ hóa, nhưng nó có một điểm hạn chế lớn. Trong ngôi nhà của chúng ta, có nhiều luồng (threads) chạy đồng thời. Tuy nhiên, trong một hệ thống thực tế, thường chỉ có một CPU, vì vậy chỉ có một "thứ" có thể chạy tại một thời điểm.
+
+  ### Một CPU
+  
+
   </details>
 </details>
