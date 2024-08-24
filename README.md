@@ -1300,7 +1300,7 @@
   <summary><b>Introduction of Process Synchronization</b></summary>
   
   ### Khái niệm về đồng bộ hóa process
-  *Đồng bộ hóa process* là thứ tự hóa việc thực hiện của nhiều process trong hệ thống đa nhiều process để đảm bảo rằng chúng có thể truy cập và chia sẻ tài nguyên theo cách mà chúng ta có kể kiểm soát và dự tính được. Mục tiêu của nó là giải quyết các vấn đề về *race condition* và các vấn đề đồng bộ khác sẽ xảy ra trong một hệ thống đồng thời.
+  *Đồng bộ hóa process* là thứ tự hóa việc thực hiện của nhiều process trong hệ thống nhiều process để đảm bảo rằng chúng có thể truy cập và chia sẻ tài nguyên theo cách mà chúng ta có kể kiểm soát và dự tính được. Mục tiêu của nó là giải quyết các vấn đề về *race condition* và các vấn đề đồng bộ khác sẽ xảy ra trong một hệ thống đồng thời.
 
   Mục tiêu chính của đồng bộ hóa proecss là đảm bảo rằng nhiều process có thể truy vào một tài nguyên dùng chung mà không ảnh hưởng lẫn nhau và ngăn chặn các khả năng xảy ra dữ liệu không nhất quán do việc truy cập đồng thời. Để đạt được điều này, các kĩ thuật đồng bộ hóa khác nhau chẳng hạn như semaphore, monitor và cirtical section được sử dụng.
 
