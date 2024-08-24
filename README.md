@@ -939,7 +939,7 @@
 
 - <details>
   <summary>
-  <b>Process and Threads (In details, theory)</b>
+  <b>Process and Threads (QNX Neutrino Terms)</b>
   </summary>
 
   ## Mở đầu
@@ -1146,5 +1146,84 @@
   ![img](images/dpt1.gif)
 
   Đối với hệ thống nhiều CPU, các luật cũng tương tự, ngoại trừ việc nhiều CPU sẽ có thể chạy nhiều thread đồng thời. Thứ tự các thread chạy (các threads nào sẽ chạy trên các CPUs) sẽ được xác định giống hệt với cách quyết định trên một CPU đơn lẻ - thread READY có độ ưu tiên cao nhất sẽ chạy trên một CPU. Khi xử lý các thread có độ ưu tiên thấp hơn hoặc đã chờ đợi lâu, kernel có thể linh hoạt trong việc lập lịch để tránh lãng phí tài nguyên, đặc biệt là bộ nhớ đệm (cache). Kernel sẽ cố gắng tối ưu hóa việc sử dụng bộ nhớ đệm bằng cách sắp xếp các thread sao cho dữ liệu mà các thread này cần đã sẵn có trong cache hoặc dễ dàng truy cập. Điều này giúp giảm thiểu việc cache miss (khi dữ liệu cần thiết không có trong cache) và tăng hiệu quả xử lý của CPU.
+
+  ### Kernel states
+  Chúng ta đã nói về "running", "ready" và "blocked" một cách lỏng lẻo - bây giờ hãy chính thức hóa các *thread states* này.
+
+  #### RUNNING
+  State RUNNING đơn giản có nghĩa là thread này bây giờ đang tiêu thụ CPU. Trong hệ thống SMP, sẽ có nhiều threads cùng chạy; trên hệ thống một processor đơn lẻ, sẽ có một thread đang chạy.
+
+  #### READY
+  READY state nghĩa là thread có thể chạy ngay bây giờ - ngoại trừ việc là nó không thể, bởi vì có một thread khác (có cùng hoặc có độ ưu tiên cao hơn) đang chạy. Nếu hai thread đều có khả năng sử dụng CPU, một thread có độ ưu tiên 10 và một thread có độ ưu tiên 7, thì thread có độ ưu là 10 sẽ RUNNING còn thread có độ ưu tiên 7 sẽ READY.
+
+  #### Các trạng thái blocked
+  Tại sao chúng ta gọi chung là là blocked state? Vấn đề là, không chỉ có *một* block state, mà có hơn hàng chục trạng thái blocking.
+
+  Tại sao lại nhiều thế? Bởi vì Kernel cần theo dõi *tại sao* thread lại bị blocked.
+
+  Chúng ta đã thấy hai blocking state - khi một thread bị block và đang chờ mutex, thread đó đang ở MUTEX state. Khi một thread đang bị block và chờ một semaphore, thì là SEM state. Những trạng thái này đơn giản sẽ giúp chỉ ra hàng đợi nào (và tài nguyên nào) mà thread đó đang bị block.
+
+  Nếu có một số lượng nhất định các threads bị block bởi một mutex (hay nói cách khác là đang trong MUTEX state), chúng sẽ không được kernel quan tâm *cho đến khi* thread sở hữu mutex trả nó lại. Tại thời điểm đó, tất cả các thread đang blocked sẽ trở nên READY, và kerneel sẽ tiến hành tái lập lịch (nếu cần thiết).
+
+  Tại sao là "nếu cần thiết?" Thread mà vừa trả lại mutex rất có thể vẫn có một số thứ khác cần phải làm *và* thread đó có độ ưu tiên cao hơn so với các thread đang chờ. Trong trường hợp này, chúng ta đến với luật thứ hai, "Thread có độ ưu tiên cao nhất sẽ chạy", nghĩa là thứ tự lập lịch không cần phải thay đổi - thread có độ ưu tiên cao vẫn tiếp tục chạy kể cả sau khi đã release mutex.
+
+  ## Quay trở lại với Threads và Process
+  Hãy cùng quay trở lại với thảo luận của chúng ta về process và threads trước đó, lần này là với góc nhìn trên một hệ thống thực tế. Sau đó, chúng ta sẽ xem xét về các lợi gọi hàm được sử dụng để xử lí cho threads và process.
+
+  Chúng ta biết rằng một process có thể có một hoặc nhiều threads (Một process không có threads nào thì sẽ không thể *làm* bất cứ thứ gì - Không có ai ở nhà, vậy nên không có gì xảy ra). Hệ thống Neutrino có thể có một hoặc nhiều process. (Tương tự, một hệ thống không có process nào cũng không thể thực hiện bất kì thứ gì)
+
+  Vậy những process và threads này sẽ làm gì? Cuối cùng, chúng cấu thành nên một *hệ thống* - tập hợp các threads và process để thực hiện một mục đích gì đó.
+
+  Ở tầng cao nhất, thì một hệ thống là cấu thành nên từ nhiều process. Mỗi process chịu trách nhiệm cho việc cung cấp một dịch vụ nào đó - có thể là hệ thống tệp (filesystem), trình điều khiển hiển thị (display driver), mô-đun thu thập dữ liệu (data acquisition module), mô-đun điều khiển (control module), hoặc bất kỳ dịch vụ nào khác.
+
+  Bên trong mỗi process, có thể có một số lượng nhất định các threads. Các số lượng này là khác nhau. Một người thiết kế *sử dụng một thread* có thể tạo nên *cùng một chức năng* với một người thiết kế khác *sử dụng năm thread*. Một số vấn đề có thể dễ dàng được giải quyết bằng cách sử dụng đa luồng (multi-threaded) và thực sự khá đơn giản để thực hiện, trong khi các process khác lại phù hợp hơn với việc sử dụng một luồng đơn (single-threaded) và rất khó để chuyển đổi sang đa luồng.
+
+  ### Tại sao lại phải có nhiều process?
+  Vậy tại sao không thể có một process với hàng triệu threads? Mặc dù một số hệ điều hành ép buộc chúng ta code theo cách đó, thì việc chia nhỏ công việc ra thành nhiều process có rất nhiều lợi ích về:
+
+  - Tính tách rời và tính mô đun hóa
+  - Khả năng bảo trì.
+  - Độ tin cậy.
+
+  Khả năng "chia nhỏ vấn đề" ra thành nhiều vấn đề độc lập là một khái niệm mạnh mẽ.
+</details>
+<details>
+<summary>
+<b>Sub Module - Overview about OS</b>
+</summary>
+
+- <details>
+  <summary><b>Introduction of Process Management</b></summary>
   </details>
+
+  Process là một chương trình trong quá trình thực thi. Ví dụ, khi chúng ta viết một chương trình bằng C hoặc C++ rổi compile nó, compiler tạo ra các mã nhị phân. Các đoạn code gốc và các đoạn code nhị phân đều là chương trình. Khi chúng ta thực sự chạy các mã nhị phân, nó trở thành một process. Một process là một thực thể "động" khác với cho một chương trình, được xem như là một thực thể "bị động". Một chương trình đơn lẻ có thể tạo ra nhiều process khi nó chạy nhiều lần; chẳng hạn, khi chúng ta mở một file .exe hoặc một file nhị phân nhiều lần, nhiều instance được tạo ra (nhiều process được tạo ra).
+
+  ### Process Management là gì?
+  Process mangament là một phần quan trọng của hệ điều hành. Nó điều khiển cách mà một process được thực hiện, và điều khiển cách mà máy tính hoạt động bằng cách kiểm soát các process đang hoạt động. Việc này bao gồm dừng process, cài đặt process nào nên được chú ý, và nhiều hơn thế nữa. Chính chúng ta cũng có thể tự kiểm soát process trên máy tính của mình nếu muốn.
+
+  OS có nhiệm vụ điều khiển việc bắt đầu, dừng và lập lịch cho các process, hay nói cách khác là các chương trình chạy trên hệ thống. Hệ điều hành sử dụng nhiều phương pháp khác nhau để ngăn chặn deadlocks, tạo điều kiện thuận lợi cho việc giao tiếp liên process và đồng bộ hóa các process. Quản lý process một cách có hiệu quả sẽ đảm bảo phân bổ tài nguyên hợp lý, thực thi process không gặp xung đột và hiệu suất hệ thống tối ưu. Thành phần thiết yếu này của hệ điều hành cho phép thực thi nhiều ứng dụng cùng một lúc, tăng cường khả năng sử dụng và khả năng phản hồi của hệ thống.
+
+  ### Process trông như thế nào trong bộ nhớ?
+  Một process trong bộ nhớ sẽ được chia ra thành các phần riêng biệt, và mỗi phần sẽ có một mục đích riêng biệt. Dưới đây thể hiện một process sẽ trông như thế nào trong bộ nhớ:
+  
+  ![img](images/sub-module/process.png)
+
+  - **Text section**: Trong một process, Text Section (hay còn gọi là Code Segment) là phần bộ nhớ chứa mã lệnh thực thi của chương trình. Đây là nơi lưu trữ các lệnh của chương trình đã được biên dịch từ mã nguồn, sẵn sàng để CPU thực thi.
+  - **Data section**: là phần bộ nhớ chứa dữ liệu toàn cục và tĩnh của chương trình. Nó được phân bổ khi chương trình bắt đầu chạy và có thể bao gồm các biến và cấu trúc dữ liệu mà chương trình cần trong suốt thời gian thực thi.
+  - **Stack section**: là phần bộ nhớ được sử dụng để quản lý các cuộc gọi hàm và dữ liệu tạm thời trong suốt thời gian thực thi của chương trình. Đây là nơi các biến cục bộ, các tham số hàm, và thông tin cần thiết cho việc thực thi các hàm được lưu trữ.
+  - **Heap section**: là phần bộ nhớ được sử dụng để cấp phát bộ nhớ động, tức là bộ nhớ mà kích thước có thể thay đổi trong suốt thời gian thực thi của chương trình.
+
+  ### Các đặc điểm của một Process:
+
+  Một process có thể có các thuộc tính sau đây:
+
+  - **Process Identifier (PID)**: là *mã định danh* được hệ điều hành gán cho để phân biệt giữa các process khác nhau.
+  - **Process state**: là *trạng thái* của process, có thể có các trạng thái như: *New*, *Ready*, *Running*, *Waiting* hoặc *Terminated*.
+  - **CPU Registers**: giúp lưu trữ và quản lý các trạng thái hiện tại của process, bao gồm địa chỉ lệnh, dữ liệu tạm thời, và thông tin điều khiển. (các thanh ghi này cần phải được lưu trữ và phục hồi khi mà process được swap ra và swap vào CPU).
+  - **Các thông tin tính toán**: Lượng CPU được sử dụng cho việc thực hi process, thời gian giới hạn, Id thực thi, vv...
+  - **Các thông tin về tình trạng I/O**: thông tin về các thiết bị được cấp phát cho process, các file đã mở, vv...
+  - **Các thông tin lập lịch CPU**: chẳng hạn như độ ưu tiên (mỗi process sẽ có một độ ưu tiên nhất định, chẳng hạn một process ngắn hơn được gán độ ưu tiên cao hơn trong bộ lập lịch *shortest job first*).
+
+  Tất cả các thuộc tính trên của một process còn được biết đến là **ngữ cảnh của process** hay **process context**. Mỗi process có một proces control block (PCB) của riêng nó, hay nói cách khác mỗi process sẽ có một PCB độc nhất và tất cả các thuộc tính phía trên là một phần của PCB.
+
 </details>
