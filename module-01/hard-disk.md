@@ -1,0 +1,7 @@
+# Khái niệm
+
+Một đĩa cứng là một phần của một đơn vị, thường đc gọi là "disk drive", "hard drive", hoặc "hard disk drive", lưu trữ và cung cấp khả năng truy cập tương đối nhanh vào một lượng lớn data trên một bề mặt hoặc trên tập hợp các bề mặt được tích điện từ tính. Máy tính ngày nay thường đi kèm với một đĩa cứng chứa hàng tỉ byte (gigabyte) dung lượng lưu trữ.
+
+Một đĩa cứng thực sự là một tập hợp các "đĩa" xếp chồng lên nhau, mỗi cái đĩa giống như một "đĩa phát nhạc", có dữ liệu được ghi lại bằng từ tính trong các vòng tròn đồng tâm hay "tracks" trên đĩa. Một "head" (một thứ gì đó giống như kim đọc dữ liệu trên đĩa phát nhạc nhưng nằm ở một vị trí tương đối cố định) sẽ ghi (write) hoặc đọc (read) các thông tin được ghi trên các track của đĩa. Hai heads, một ở mỗi bên của một đĩa sẽ đọc hoặc ghi dữ liệu khi đĩa quay. Mỗi lần đọc ghi sẽ yêu cầu định vị dữ liệu, đây là một thao tác gọi là "seek" (Dữ liệu đã có trong disk cache sẽ được định vị nhanh hơn)
+
+Một đơn vị hard disk/drive đi kèm với một tốc độ quay cố định, dao động từ 4500 đến 7200 rpm. Thời gian truy cập đĩa được đo bằng milliseconds. Mặc dù vị trí vật lý có thể được xác định bằng các vị trí cylinder, track, và sector, những vị trí này thực ra được ánh xạ tới một logical block address (LBA) hoạt động với phạm vi địa chỉ lớn hơn trên các đĩa cứng ngày nay.
