@@ -1677,5 +1677,6 @@
 <b>Sub Module 2 - Network Refresher</b>
 </summary>
 
-1. **[What is OSI model](s-module-02/what-is-osi-model.md)**
+1. **[Networking Fundamentals - Hosts, IP Addresses, Networks](s-module-02/hosts-ip-networks.md)**
+2. **[What is OSI model](s-module-02/what-is-osi-model.md)**
 </details>
