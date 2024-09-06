@@ -1,5 +1,7 @@
 # my-linux-learning
 
+Đây là repository dùng để ghi chú lại các thông tin quan trọng trong quá trình học và sử dụng hệ điều hành Linux của mình.
+
 ## Table of Contents
 
 
@@ -56,6 +58,8 @@
 8. **[WildCards](module-03/wild-cards.md)**
 
 9. **[Soft and hard links in details](module-03/soft-and-hard-links-in-details.md)**
+
+</details>
 
 <details>
 <summary>
@@ -1659,294 +1663,19 @@
 </details>
 <details>
 <summary>
-<b>Sub Module - Overview about OS</b>
+<b>Sub Module 1 - OS Refresher</b>
 </summary>
 
-- <details>
-  <summary><b>Introduction of Process Management</b></summary>
+1. **[Introduction of process management](s-module-01/introduction-process-management.md)**
+
+2. **[Introduction of process synchronization](s-module-01/introduction-process-synchronization.md)**
   
-  ### Khái niệm cơ bản về Process
-  Process là một chương trình trong quá trình thực thi. Ví dụ, khi chúng ta viết một chương trình bằng C hoặc C++ rổi compile nó, compiler tạo ra các mã nhị phân. Các đoạn code gốc và các đoạn code nhị phân đều là chương trình. Khi chúng ta thực sự chạy các mã nhị phân, nó trở thành một process. Một process là một thực thể "động" khác với cho một chương trình, được xem như là một thực thể "bị động". Một chương trình đơn lẻ có thể tạo ra nhiều process khi nó chạy nhiều lần; chẳng hạn, khi chúng ta mở một file .exe hoặc một file nhị phân nhiều lần, nhiều instance được tạo ra (nhiều process được tạo ra).
-
-  ### Process Management là gì?
-  Process mangament là một phần quan trọng của hệ điều hành. Nó điều khiển cách mà một process được thực hiện, và điều khiển cách mà máy tính hoạt động bằng cách kiểm soát các process đang hoạt động. Việc này bao gồm dừng process, cài đặt process nào nên được chú ý, và nhiều hơn thế nữa. Chính chúng ta cũng có thể tự kiểm soát process trên máy tính của mình nếu muốn.
-
-  OS có nhiệm vụ điều khiển việc bắt đầu, dừng và lập lịch cho các process, hay nói cách khác là các chương trình chạy trên hệ thống. Hệ điều hành sử dụng nhiều phương pháp khác nhau để ngăn chặn deadlocks, tạo điều kiện thuận lợi cho việc giao tiếp liên process và đồng bộ hóa các process. Quản lý process một cách có hiệu quả sẽ đảm bảo phân bổ tài nguyên hợp lý, thực thi process không gặp xung đột và hiệu suất hệ thống tối ưu. Thành phần thiết yếu này của hệ điều hành cho phép thực thi nhiều ứng dụng cùng một lúc, tăng cường khả năng sử dụng và khả năng phản hồi của hệ thống.
-
-  ### Process trông như thế nào trong bộ nhớ?
-  Một process trong bộ nhớ sẽ được chia ra thành các phần riêng biệt, và mỗi phần sẽ có một mục đích riêng biệt. Dưới đây thể hiện một process sẽ trông như thế nào trong bộ nhớ:
-  
-  ![img](images/sub-module/process.png)
-
-  - **Text section**: Trong một process, Text Section (hay còn gọi là Code Segment) là phần bộ nhớ chứa mã lệnh thực thi của chương trình. Đây là nơi lưu trữ các lệnh của chương trình đã được biên dịch từ mã nguồn, sẵn sàng để CPU thực thi.
-  - **Data section**: là phần bộ nhớ chứa dữ liệu toàn cục và tĩnh của chương trình. Nó được phân bổ khi chương trình bắt đầu chạy và có thể bao gồm các biến và cấu trúc dữ liệu mà chương trình cần trong suốt thời gian thực thi.
-  - **Stack section**: là phần bộ nhớ được sử dụng để quản lý các cuộc gọi hàm và dữ liệu tạm thời trong suốt thời gian thực thi của chương trình. Đây là nơi các biến cục bộ, các tham số hàm, và thông tin cần thiết cho việc thực thi các hàm được lưu trữ.
-  - **Heap section**: là phần bộ nhớ được sử dụng để cấp phát bộ nhớ động, tức là bộ nhớ mà kích thước có thể thay đổi trong suốt thời gian thực thi của chương trình.
-
-  ### Các đặc điểm của một Process:
-
-  Một process có thể có các thuộc tính sau đây:
-
-  - **Process Identifier (PID)**: là *mã định danh* được hệ điều hành gán cho để phân biệt giữa các process khác nhau.
-  - **Process state**: là *trạng thái* của process, có thể có các trạng thái như: *New*, *Ready*, *Running*, *Waiting* hoặc *Terminated*.
-  - **CPU Registers**: giúp lưu trữ và quản lý các trạng thái hiện tại của process, bao gồm địa chỉ lệnh, dữ liệu tạm thời, và thông tin điều khiển. (các thanh ghi này cần phải được lưu trữ và phục hồi khi mà process được swap ra và swap vào CPU).
-  - **Các thông tin tính toán**: Lượng CPU được sử dụng cho việc thực hi process, thời gian giới hạn, Id thực thi, vv...
-  - **Các thông tin về tình trạng I/O**: thông tin về các thiết bị được cấp phát cho process, các file đã mở, vv...
-  - **Các thông tin lập lịch CPU**: chẳng hạn như độ ưu tiên (mỗi process sẽ có một độ ưu tiên nhất định, chẳng hạn một process ngắn hơn được gán độ ưu tiên cao hơn trong bộ lập lịch *shortest job first*).
-
-  Tất cả các thuộc tính trên của một process còn được biết đến là **ngữ cảnh của process** hay **process context**. Mỗi process có một proces control block (PCB) của riêng nó, hay nói cách khác mỗi process sẽ có một PCB độc nhất và tất cả các thuộc tính phía trên là một phần của PCB.
-
-  ### Các trạng thái (state) của một process
-  Một process có thể có một trong các trạng thái dưới đây:
-  - **New**: Process vừa mới tạo hoặc process đang được tạo - tạo ra process.
-  - **Ready**: Sau khi tạo xong, process được chuyển vào trạng thái Ready, tức là process sẵn sàng để thực thi.
-  - **Wait (hoặc block)**: Khi một process yêu cầu một tác vụ I/O.
-  - **Complete (hoặc Terminated)**: Khi một process hoàn thành việc thực thi của nó.
-  - **Suspended Ready**: khi mà hàng đợi READY bị full, một số process sẽ chuyển sang suspend ready.
-  - **Suspended Block**: Khi mà hàng đợi WAITING bị full.
-
-  ![img](images/sub-module/process-states1.png)
-
-  ### Process Operations
-  *Process operation bên trong hệ điều hành* đề cập đến các activities khác nhau mà hệ điều hành thực hiện để quản lí các process. Những operation này bao gồm *khởi tạo process*, *lập lịch process*, *thực thi process* và *kill process*. Dưới đây là một số process operation trọng yếu:
-
-  ![img](images/sub-module/Screenshot-2024-07-09-113355.png) 
-
-  #### Khởi tạo process
-  Quá trình khởi tạo một process trong OS là các hành động tạo ra một process mới. Process mới này là một thể hiện của một chương trình và có thể thực thi một cách độc lập.
-
-  #### Lập lịch process
-  Một khi process sẵn sàng để chạy, nó được đặt vào "READY queue". Nhiệm vụ của bộ lập lịch là chọn một process từ queue này và bắt đầu thực thi nó.
-
-  #### Thực thi process
-  Thực thi nghĩa là CPU bắt đầu hoạt động trên process. Trong quá trình này, một process có thể: 
-  - Di chuyển đến một waiting queue nếu nó cần thực hiện một tác vụ I/O.
-  - Bị chặn nếu như có một process có độ ưu tiên cao hơn cần đến CPU.
-
-  #### Kill process
-  Sau khi một process hoàn thành task của nó, hệ điều hành kết thúc nó và xóa PCB của nó.
-
-  ### Chuyển đổi ngữ cảnh một Process
-  Quá trình lưu lại ngữ cảnh (context) của một process và load context của một process khác được gọi là *Context Switching*. Theo một cách định nghĩa dễ hiểu, thì nó giống như là load và unload một process từ trạng thái *running* sang trạng thái *ready*.
-
-  #### Khi nào Context Switch xảy ra?
-  Context Switch xảy ra khi:
-
-  - Một process có độ ưu tiên cao hơn chuyển sang trạng thái *ready* (có độ ưu tiên cao hơn so với process đang chạy).
-  - Một *Interrupt* xảy ra.
-  - Chuyển đổi chế độ người dùng và user (mặc dù không cần thiết).
-  - *Preemptive CPU scheduling* được sử dụng.
-  
-  #### Contedxt Switch và Mode Switch
-  Một switch xảy ra khi mức đặc quyền CPU bị thay đổi, ví dụ là một system call được thực hiện hoặc một lỗi xảy ra. Kernel hoạt động ở mức độ có đặc quyền cao hơn so với các task cơ bản của người dùng. Nếu một process người dùng muốn truy cập vào những thứ mà chỉ có thể được phép truy cập bằng kernel, *mode switch* phải diễn ra. Process đang được thực thi hiện tại không nên bị thay đổi trong quá trình xảy ra mode switch. Một *mode switch* thường xảy ra khi *context switch* của process xảy ra. Chỉ *kernel* mới được phép tạo *context switch*.
-
-  #### CPU-Bound và I/O Bound process
-  Một CPU-bound process yêu cầu nhiều thời gian CPU hơn và dành nhiều thời gian hơn ở *running state*. Một I/O-bound process yêu cầu nhiều thời gian I/O và ít thời gian CPU hơn. Một I/O-bound process dành nhiều thời gian hơn ở *waiting state*.
-
-  *Lập kế hoạch cho process* là một phần hông thể thiếu cho việc *quản lí process* của một hệ điều hành. Nó đề cập đến các cơ chế sẽ được sử dụng bởi hđh để xác định xem process nào sẽ được chạy tiếp theo. Mục tiêu của lập lịch process là cải thiện hiệu suất tổng quát của hệ thống bằng cách tối ưu hóa sử dụng CPU, tối thiểu hóa thời gian thực thi và tăng cường tốc độ phản hồi của hệ thống.
-
-  #### Các thuật toán lập lịch process
-  Hệ điều hành có thể sử dụng nhiều thuật toán lập lịch khác nhau để lập lịch cho process. Dưới đây là một số thuật toán phổ biến được sử dụng:
-  - **First-Come, First-Served (FCFS)**: Đây là thuật toán lập lịch đơn giản nhất, khi mà process sẽ được thực thi trên quy tắc "đến trước, phục vụ trước". FSFS là một thuật toán non-preemptive, tức là một khi một process bắt đầu thực thi, nó sẽ tiếp tục thực thi cho đến khi nó hoàn thành hoặc chờ đợi một I/O.
-  - **Shortest Job First (SJF)**: SJF là một thuật toán lập lịch chủ động chọn process có *burst time* ngắn nhất.
-  - **Round Robin (RR)**: Là một thuật toán lập lịch chủ động dành một khoảng thời gian cố định trong một vòng cho mỗi process. Nếu process không hoàn thành quá trình thực thi của trong khoản thời gian cụ thể, nó sẽ bị blocked và được thêm vào cuối hàng đợi. RR đảm bảo sự phân phối đều đặn trong thời gian CPU tới mọi process và tránh tình trạng starvation (*là tình trạng mà process không tiếp cận được tài nguyên nó cần để hoàn thành công việc của mình, khiến process mất rất nhiều thời gian để hoàn thành hoặc tệ hơn là không bao giờ hoàn thành*).
-  - **Priority Scheduling**: Thuật toán lập lịch này gán một độ ưu tiên nhất định cho mỗi process và proces nào có độ ưu tiên cao nhất sẽ được thực thi đầu tiên. Độ ưu tiên có thể được set dựa vào *process type*, *độ quan trọng*, hoặc *tài nguyên yêu cầu*.
-  - **Multilevel Queue**: Thuật toán lập lịch này chia hàng đợi READY ra thành nhiều hàng đợi khác nhau, và mỗi hàng đợi sẽ có một độ ưu tiên khác nhau. Process được xếp vào hàng đợi dựa vào độ ưu tiên của chúng, và mỗi hàng đợi lại sử dụng một thuật toán lập lịch riêng. Thuật toán này phổ biến trong trường hợp mà chúng ta có nhiều loại process và có nhiều mức độ ưu tiên khác nhau.
-  
-  ### Ưu điểm của quản lí process
-  - **Chạy nhiều chương trình**: Quản lí process cho phép chúng ta chạy nhiều chương trình tại một thời điểm, ví dụ, nghe nhạc trong khi đang lướt web.
-  - **Cách ly process**: Đảm bảo rằng các chương trình khác nhau sẽ không ảnh hưởng đến nhau, và như thế một lỗi xảy ra tại một chương trình sẽ không crash chương trình khác.
-  - **Sử dụng tài nguyên hợp lí**: Khiến cho các tài nguyên như thời gian CPU và bộ nhớ được chia sẻ một cách hợp lí giữa các chương trình, nên kể cả các chương trình có độ ưu tiên thấp hơn cũng có cơ hội được chạy.
-  - **Chuyển đổi mượt mà**: Xử lí việc chuyển đổi giữa các chương trình một cách có hiệu quả, save và load trạng thái của chúng một cách nhanh chóng để tối thiểu hóa độ trễ trong thời gian phản hồi của hệ thống.
-
-  ### Nhược điểm của quản lí process
-  - **Overhead**: Quản lí process cũng sẽ sử dụng các tài nguyên hệ thống bởi vì OS cần duy trì các cấu trúc dữ liệu và hàng đợi lập lịch. Việc này yêu cầu đến thời gian CPU và bộ nhớ, một phần nào đó ảnh hưởng đến hiệu suất hệ thống.
-  - **Phức tạp**: Thiết kế và bảo trì một OS là một việc rất phức tạp bởi vì các yêu cầu về các thuật toán lập lịch và phân bổ tài nguyên.
-  - **Deadlocks**: Để giữ cho process chạy mượt mà cùng với nhau, OS sử dụng các cơ chế như semaphore và mutex locks. Tuy nhiên các cách trên có thể dẫn đến deadlocks, khi mà một process bị kẹt do phải chờ đợi lẫn nhau mãi mãi.
-  - **Làm tăng thêm quá trình context switch**: Trong các hệ thống đa nhiệm, OS thường xuyên chuyển đổi giữa các process. Lưu trữ và load các state của mỗi process (trong *context switching*) là một quá trình tốn thời gian và cần tính toán, làm chậm hệ thống. 
-  </details>
-
-- <details>
-  <summary><b>Introduction of Process Synchronization</b></summary>
-  
-  ### Khái niệm về đồng bộ hóa process
-  *Đồng bộ hóa process* là thứ tự hóa việc thực hiện của nhiều process trong hệ thống nhiều process để đảm bảo rằng chúng có thể truy cập và chia sẻ tài nguyên theo cách mà chúng ta có kể kiểm soát và dự tính được. Mục tiêu của nó là giải quyết các vấn đề về *race condition* và các vấn đề đồng bộ khác sẽ xảy ra trong một hệ thống đồng thời.
-
-  Mục tiêu chính của đồng bộ hóa proecss là đảm bảo rằng nhiều process có thể truy vào một tài nguyên dùng chung mà không ảnh hưởng lẫn nhau và ngăn chặn các khả năng xảy ra dữ liệu không nhất quán do việc truy cập đồng thời. Để đạt được điều này, các kĩ thuật đồng bộ hóa khác nhau chẳng hạn như semaphore, monitor và cirtical section được sử dụng.
-
-  Trong hệ thống đa process, đồng bộ hóa là cần thiết để đảm bảo tính bền vững và tính chính trực của dữ liệu, tránh các rủi ro về deadlocks và các vấn đề đồng bộ hóa khác. Đồng bộ hóa process là một khía cạnh quan trọng trong các hệ điều hành hiện đại, và nó đóng trò chủ chốt trong việc đảm bảo hoạt động chính xác và hiệu quả trong các hệ thống đa process.
-
-  #### Nhắc khái quát lại khái niệm về Process
-  Một process là một chương trình đang chạy hoặc một chương trình đang thực thi. Nó bao gồm các dòng code của chương trình và tất cả các activity mà nó cần để thực hiện nhiệm vụ của nó, chẳng hạn như sử dụng CPU, bộ nhớ và các tài nguyên khác. Tưởng tượng đến process như là một nhiệm vụ mà máy tính đang thực hiện, chẳng hạn như mở trình duyệt web và xem video.
-
-  ### Các loại process
-  Trên cơ sở đồng bộ hóa, thì process được phân nhóm vào một trong hai loại dưới đây:
-  
-  - **Process độc lập**: Việc thực thi của process này sẽ không ảnh hưởng đến việc thực thi của proces khác.
-  - **Process phối hợp (cooprative)**: Một process có thể ảnh hưởng hoặc bị ảnh hưởng bởi một process khác đang được thực hiện bởi hện thống.
-  
-  Vấn đề trong đồng bộ process phát sinh trong trường hợp các process phối hợp bởi vì tài nguyên có thể được chia sẻ trong process phối hợp.
-
-  ### Race Condition là gì?
-  Khi có nhiều hơn một process thực thi cùng một khối mã hoặc truy cập vào cùng một vùng nhớ hay bất kì các biến dùng chung nào đó dẫn đến *khả năng* xảy ra sự sai lệch trong kết quả đầu ra hoặc trong giá trị của các biến dùng chung, khiến cho tất cả các process khác "trong cuộc đua" xem rằng output của nó là đúng (trên thực tế là sai), *khả năng* này được gọi là *race condition*. Nhiều process truy cập và xử lí đồng thời các thao tác trên cùng một khối dữ liệu, dẫn đến kết quả phụ thuộc vào thứ tự mà các process tác động.
-
-  Khi nhiều process truy cập và xử lý các thao tác trên cùng một dữ liệu đồng thời, kết quả cuối cùng phụ thuộc vào thứ tự cụ thể mà các thao tác xảy ra. Race condition là một tình huống có thể xảy ra bên trong một *critical section* (khu vực quan trọng). Điều này xảy ra khi kết quả của nhiều thread thực thi trong critical section khác nhau tùy thuộc vào thứ tự mà các thread thực hiện.
-
-  Race condition trong critical section có thể được tránh nếu critical section được coi là *một thao tác nguyên tử* (atomic instruction). Ngoài ra, việc đồng bộ hóa các thread đúng cách bằng cách sử dụng các khóa (locks) hoặc các biến nguyên tử (atomic variables) có thể ngăn chặn race condition.
-
-  ### Vấn đề Critical Section
-  Một critical section là một đoạn code chỉ có thể được truy cập bởi một process tại một thời điểm. Critical section chứa các biến cần phải được đồng bộ hóa để duy trì tính ổn định của dữ liệu. Vậy nên *vấn đề critical section* nghĩa là đề cập đến *cách thiết kế* để cho phép nhiều *process phối hợp* có thể truy cập các tài nguyên dùng chung mà không tạo ra các dữ liệu không nhất quán.
-
-  ![img](images/sub-module/critical-section-problem.png)
-
-  Trong *entry section*, process sẽ yêu cầu được truy cập vào **Critical Section**.
-
-  Bất kì giải pháp cho vấn đề critical section cần phải thỏa ba yêu cầu sau:
-  
-  - **Mutual Exclusion**: Nếu một process đang thực thi bên trong critical section, thì không một process nào khác được phép thực thi bên trong critical section.
-  - **Progress**: Nếu không một process nào đang thực thi bên trong critical section và các process khác đang chờ bên ngoài critical section, thì chỉ chỉ những process *đang không thực thi* remainder section của chúng mới có quyền tham gia vào với tư cách là ứng viên cho quá trình quyết định process nào được phép truy cập tiếp theo, và việc lựa chọn này không thể được trì hoãn vô thời hạn.
-  - **Bounded Waiting**: Cần phải có một giới hạn nhất định cho *số lần mà process được phép truy cập vào critical section* sau khi process đã yêu cầu được truy cập và trước khi yêu cầu đó được chấp thuận.
-
-  ##### Giải pháp Peterson
-  Giải pháp Peterson là một giải pháp dựa trên các phần mềm cổ điển cho vấn đề Critical Section. Trong giải pháp này, chúng ta cần có hai biến dùng chung:
-  
-  - boolean flag[i]: giá trị khởi tạo là FALSE, ban đầu không có process nào muốn truy cập *critical section*.
-  - int turn: là process đến lượt được phép truy cập.
-  
-  ![img](images/sub-module/peterson.png)
-  
-  *Giải pháp này bảo toàn được 3 điều kiện*
-
-  **Nhược điểm của giải pháp Peterson**
-  - **Sử dụng Busy Waiting**: (Trong giải pháp Peterson, câu lệnh code "while(flag[j] && turn == j);" là nguyên nhân gây ra điều này. Busy waiting không được ưa chuộng vì nó lãng phí các chu kỳ CPU có thể được sử dụng để thực hiện các tác vụ khác.)
-  - **Giới hạn chỉ cho 2 Process**: Giải pháp Peterson chỉ có thể áp dụng cho hai process. Điều này làm cho nó không linh hoạt trong các hệ thống đa process.
-  - **Không thể sử dụng trên kiến trúc CPU hiện đại**: Giải pháp Peterson không thể được áp dụng trên các kiến trúc CPU hiện đại do các vấn đề về hiệu suất và các tính năng phần cứng hiện đại không tương thích với giải pháp này.
-
-  #### Semaphores
-  Một semaphore là một cơ chế phát tín hiệu và một thread đang chờ một semaphore có thể được thread khác phát tín hiệu đến. Điều này khác với mutex vì mutex chỉ có thể được phát tín hiệu bởi thread đang gọi hàm *wait*.
-
-  Một semaphore sử dụng hai hành động nguyên tử, *wait* và *signal* cho đồng bộ hóa các process.
-
-  Một semaphore là một biến số nguyên, chỉ có thể được truy cập thông qua hai hành động *wait()* và *signal()*. Có hai loại semaphore: *Binary semaphore* và *Counting semaphore*:
-
-  - **Binary Semaphore**: Chỉ có thể là 0 hoặc 1. Chúng còn được biết đến như một khóa mutex, là một khóa được dùng trong *mutual exclusion*. Tất cả các process có thể chia sẻ cùng một mutex semaphore được khởi tạo là 1. Sau đó, mỗi process phải chờ cho đến khi khóa trở thành 0. Sau đó, có thể làm cho mutex semaphore thành 1 và bắt đầu truy cập critical section của mình. Khi mà một process hoàn thành xong, nó phải reset giá trị của mutex semaphore thành 0 và các process khác có thể được phép truy cập vào critical section.
-  - **Counting Semaphores**: Chúng có thể bất kì giá trị nào mà không bị giới hạn cụ thể. Chúng có thể được dùng để kiểm soát việc truy cập đến một tài nguyên nào đó mà *cho phép* một số lượng giới hạn các truy cập *đồng thời*. Bất kì process nào muốn sử dụng tài nguyên đó, nó phải kiểm tra xem giá trị còn lại của semaphore có lớn hơn 0 hay không, tức là vẫn còn lượt cho process truy cập. Sau đó, process có thể truy cập vào critical section và phải giảm giá trị của semaphore xuống 1. Sau khi process kết thúc quá trình truy cập, nó có thể rời khỏi critical section nhưng đồng thời phải tăng  giá trị của semaphore lên 1.
-
-  ### Ưu điểm của đồng bộ Process:
-  - Đảm bảo tính nhất quán và chính trực của dữ liệu.
-  - Tránh được race condition.
-  - Ngăn ngừa các dữ liệu không nhất quán do truy cập đồng thời.
-  - Hỗ trợ một cách có hiệu quả việc sử dụng các *tài nguyên dùng chung*.
-  
-  ### Nhược điểm của đồng bộ Process:
-  - Tăng thêm overhead cho hệ thống.
-  - Có thể dẫn đến suy giảm hiệu suất.
-  - Tăng độ phức tạp cho hệ thống.
-  - Có thể gây ra deadlock nếu không được implement đúng cách.
-  </details>
-  
-- <details>
-  <summary><b>Thread in Operating System</b></summary>
-  
-  ### Khái niệm về Thread (Luồng)
-  Một luồng là một dòng tuần tự bên trong một process. Các thread còn được gọi là các lightweight process vì chúng thực thi các thuộc tính khác nhau của một process. Mỗi thread chỉ thuộc về chính xác một process. Trong hệ điều hành hỗ trợ đa luồng, một process có thể bao gồm nhiều threads. Nhưng các các thread chỉ có thể được tận dụng nếu như có nhiều hơn 1 CPU nếu không thì hai threads phải thực hiện *context switch* trên một CPU đơn.
-
-  ### Threads trong hệ điều hành là gì?
-  Bên trong một process, một threads nghĩa là dãy các activity tuần tự đang được thực hiện một cách độc lập với nhau, các activities này còn được biết đến như là một *luồng các thao tác thực thi* hay *luồng điều khiển* (thread control). Ngày nay, bất kì hệ điều hành nào cũng có thể thực thi một thread, chúng ta có thể nói, một process có thể có nhiều luồng.
-
-  ### Tại sao chúng ta cần đến thread?
-  - Threads chạy một cách song song với nhau sẽ tăng hiệu suất của chương trình. Mỗi thread sẽ có riêng CPU state và stack, nhưng chúng chia sẻ chung địa chỉ nhớ của process cũng như môi trường của process đó.
-  - Threads có thể chia sẻ data với nhau nên chúng không cần dùng đến kĩ thuật như *giao tiếp inter-process*. Giống với process, các thread cũng có các trạng thái như *ready*, *executing*, *blocked*, ...
-  - Có thể gán độ ưu tiên lên các thread khác nhau giống như process, và thread có độ ưu tiên cao nhất sẽ được lập lịch trước tiên.
-  - Mỗi thread cũng có một *khối điều điển* (Thread Control Block - TCB). Giống như process, *context switch* cũng xảy ra đối với thread, và các nội dung thanh ghi cũng được lưu vào TCB. Và vì các threads chia sẻ địa chỉ nhớ và tài nguyên với nhau, cho nên *đồng bộ hóa* cũng là yêu cầu đối vớin nhiều hoạt động khác nhau khi thao tác với threads.
-  ### Các loại threads bên trong hệ điều hành
-  Threads có hai loại, được mô tả bên dưới.
-
-  - Thread cấp độ người dùng.
-  - Thread cấp độ kernel.
- 
-  ![img](images/sub-module/Threads.png)
-
-  ### Khác biệt giữa Process và Thread
-  Điểm khác biệt chính là các thread trong cùng một process có thể chia sẻ chung một vùng nhớ, trong khi đó các process sẽ chạy trong các vùng nhớ riêng biệt. Các threads không độc lập hoàn toàn với nhau như process, và kết quả là, các thread có thể chia sẻ giữa chúng với nhau các code section, data section và tài nguyên OS. Nhưng, giống nhhư process, một thread có bộ đếm chương trình (program counter - PC), tập các thanh ghi và vùng nhớ stack của riêng nó.
-
-  ### Thế nào là đa luồng? (Multi-Thread)
-  Một thread được ví như là một tiến trình nhẹ. Ý tưởng để đạt được được tính song song là việc chia nhỏ một process ra thành nhiều threads. Ví dụ, trong trình duyệt, nhiều tab có thể chạy ở các thread khác nhau. MS Word sử dụng nhiều threads, một thread để format text, một thread để xử lí input, vv...
-
-  Đa luồng là một kĩ thuật được sử dụng trong hệ điều hành để tăng hiệu suất và tốc độ phản hồi của máy tính. Đa luồng cho phép nhiều thread (các tiến trình nhẹ) chia sẻ cùng tài nguyên của một process, cah83ng hạn như CPU, bộ nhớ và thiết bị I/O.
-
-  ![img](images/sub-module/Screenshot-from-2024-02-26-11-48-56-768.png)
-
-  #### Lợi ích của thread đối với hệ điều hành
-  - **Reponsiveness**: Nếu process được chia ra thành nhiều thread, thì khi một thread hoàn thành việc thực thi của nó, thì output của nó sẽ có thể ngay lập tức được trả về.
-  - **Context Switch nhanh hơn**: Thời gian context switch giữa các thread thấp hơn khi so với context switch của một process.
-  - **Sử dụng hiệu quả hệ thống multiprocessor**: Nếu chúng ta có nhiều thread bên trong một process, thì chúng ta có thể thiết lập cho nhiều thread chạy trên nhiều processors. Điều này khiến cho quá trình thực thi nhanh hơn.
-  - **Chia sẻ tài nguyên**: Các tài nguyên như code, data, và các file có thể được chia sẻ giữa các thread bên trong một process. Lưu ý: Bộ nhớ stacks và các thanh ghi không thể được chia sẻ giữa các thread.
-  - **Giao tiếp**: Giap tiếp giữa các thread đơn giản hơn, vì các thread chia sẻ cùng một không gian địa chỉ. Trong khi đó đối với process chúng ta cần phải tuân theo một số kĩ thuật giao tiếp nhất định để có thể cho phép hai process giao tiếp được với nhau.
-  - **Tăng cường throughput của hệ thống**: Nếu một process được chia thành nhiều thread, và mỗi thread function được xem như là một job, thì số lượn job được hoàn thành trên mỗi một đơn vị thời gian sẽ được tăng lên, qua đó tăng lượng throughput của hệ thống.
-  </details>
-  
+3. **[Thread in OS](s-module-01/thread-in-os.md)**
 </details>
-
 <details>
 <summary>
-<b>Sub Module 2 - Overview about Network</b>
+<b>Sub Module 2 - Network Refresher</b>
 </summary>
 
-- <details>
-  <summary>
-  <b>What is OSI Model? - Layers of OSI Model</b>
-  </summary>
-
-  ### Sơ lược
-
-  **OSI viết tắt cho Open Systems Interconnection**, trong đó open nghĩa là "không độc quyền". Là kiến trức 7 layer với mỗi layer có một chức năng riêng biệt để thực hiện. Tất cả 7 layer này sẽ phối hợp với nhau để truyền tải dữ liệu từ người gửi đến người nhận.
-
-  Mô hình OSI cung cấp một **nền tảng lí thuyết** để hiểu được cách **giao tiếp qua mạng**. Tuy nhiên, nó thường không được implement một cách trực tiếp trên các **phần cứng** hoặc **phần mềm** liên quan đến mạng trong thực tế. Thay vào đó, **một giao thức** và các **công nghệ** sẽ thường được thiết kế dựa trên các nguyên tắc được nêu trong mô hình OSI để tạo điều kiện thuận lợi cho hoạt động truyền tải dữ liệu và kế t nối mạng hiệu quả.
-
-  ### Mô hình OSI là gì
-  Mô hình OSI, được tạo ra năm 1984 bởi ISO, là một reference framework được dùng để giải thích quá trình truyền tải dữ liệu giữa máy tính với nhau. Nó được chia ra thành **7 layer hoạt động cùng nhau** để thực hiện các **tác vụ mạng**, cho phép một cách tiếp cận có hệ thống hơn đối với mạng máy tính.
-
-  ![img](images/sub-module-2/OSI-Model.png)
-
-  ### Data Flow trong mô hình OSI
-  Khi chúng ta truyền tải thông tin từ một thiết bị đến một thiết bị khác, nó di chuyển thông qua 7 layer của mô hình OSI. Đầu tiên dữ liệu truyền tải xuống 7 layer từ phía người gửi và sẽ được truyền tải ngược lên 7 layer từ phía người nhận.
-
-  Luồng dữ liệu được truyền tải trong mô hình OSI theo từng bước:
-  - **Application Layer**: Ứng dụng tạo ra data.
-  - **Presentation Layer**: Data được format và mã hóa.
-  - **Session Layer**: Kết nối được thành lập và quản lí.
-  - **Transport Layer**: Dữ liệu được chia nhỏ ra thành các segments để được chuyển đi.
-  - **Network Layer**: Các segments được đóng gói thành các packes và được định tuyến.
-  - **Data Link Layer**: Các packet được đóng khung (framed) và gửi đến thiết bị tiếp theo.
-  - **Physical Layer**: Frame được chuyển thành các bit và truyền tải đi.
-  Mỗi layer thêm vào một thông tin cụ thể và đảm bảo dữ liệu sẽ đến được đích đến chính xác, và các bước này sẽ được đảo ngược ở nơi đến.
-  
-  ![img](images/sub-module-2/cn1.png)
-
-  ### Các giao thức trong mô hình OSI
-  Có hai giao thức được sử dụng trong mô hình này là *giao thức hướng liên kết* và *giao thức không liên kết*.
-  #### Giao thức hướng liên kết (Connection Oriented)
-  Trước khi bắt đầu truyền dữ liệu, các thực thể trong cùng một tầng của 2 hệ thống khác nhau cần phải thiết lập một liên kết logic chung. Chúng tiến hành trao đổi, thương lượng với nhau về tập các tham số sẽ sử dụng trong quá trình truyền dữ liệu, có thể là cắt bớt hoặc hợp nhất dữ liệu, liên kết sẽ được hủy bỏ. Việc thiết lập liên kết logic này sẽ giúp nâng cao độ tin cậy và an toàn.
-  #### Giao thức không liên kết (Connectionless)
-  Với các giao thức không liên kết chỉ có giai đoạn duy nhất truyền dữ liệu và dữ liệu khi này được truyền độc lập trên cái tuyến khác nhau.
-  ### Vai trò và chức năng của 7 layer OSI
-  #### Layer 7 - Application Layer
-  Application Layer là lớp trên cùng, xác định giao diện giữa người sử dụng và môi trường OSI. Tầng ứng dụng được sử dụng bởi phần mềm người dùng cuối như trình duyệt web và ứng dụng email. Nó cung cấp các giao thức cho phép phần mềm gửi, nhận thông tin và trình bày dữ liệu có ý nghĩa cho người dùng.
-
-  Một vài ví dụ về giao thức lớp ứng dụng là Hypertext Transfer Protocol (HTTP - Giao thức truyền siêu văn bản), Post Office Protocol (POP - Giao thức bưu điện), Simple Mail Transfer Protocol (SMTP - Giao thức truyền thư đơn giản), Domain Name System (DNS - Hệ thống tên miền) và File Transfer Protocol (FTP - Giao thức truyền tệp)
-
-  #### Layer 6 - Presentation Layer
-  Tầng thứ hai kế tiếp **Application layer** là **Presentation layer**, Layer này sẽ giải quyết các vấn đề liên quan đến các cú pháp và ngữ nghĩa của thông tin được truyền.
-
-  **Presentation layer** xác định cách hai thiết bị sẽ mã hóa và nén dữ liệu để nó được nhận một cách chính xác ở đầu bên kia. **Presentation layer** lấy bất kỳ dữ liệu nào được truyền bởi **Application layer** và chuẩn bị cho việc việc truyền qua Layer phiên.
-
-  Layer này chịu trách nhiệm chính trong việc chuẩn bị dữ liệu để nó có thể được sử dụng bởi **Application layer**. Nói cách khác, Layer 6 làm cho dữ liệu hiển thị cho các ứng dụng sử dụng. **Presentation layer** chịu trách nhiệm dịch, mã hóa và nén dữ liệu.
-
-  Hai thiết bị đang giao tiếp có thể sử dụng các phương pháp mã hóa khác nhau, do đó Layer 6 chịu trách nhiệm dịch dữ liệu đến thành một cú pháp mà lớp ứng dụng của thiết bị nhận có thể hiểu được. Nếu các thiết bị đang giao tiếp qua kết nối được mã hóa, Layer 6 chịu trách nhiệm thêm mã hóa ở đầu người gửi cũng như giải mã hóa ở đầu người nhận để nó có thể hiển thị **Application layer** với dữ liệu có đọc được, không được mã hóa.
-
-  Cuối cùng, **Presentation layer** cũng chịu trách nhiệm nén dữ liệu mà nó nhận được từ lớp ứng dụng trước khi phân phối đến Layer 5. Điều này cải thiện tốc độ và hiệu quả giao tiếp bằng cách giảm thiểu lượng dữ liệu sẽ được truyền tải.  
-
-  </details>
-
+1. **[What is OSI model](s-module-02/what-is-osi-model.md)**
 </details>
