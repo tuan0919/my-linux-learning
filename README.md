@@ -39,204 +39,23 @@
 <b>Module 3 - System Access And File System</b>
 </summary>
 
-- <details>
-  <summary>
-  <b>Important things to remember in Linux</b>
-  </summary>
-  
-  - Linux có một super-user gọi là **root**.
-    - root là account có quyền mạnh nhất có thể tạo, chỉnh sửa, xóa các account khác và thay đổi file system của hệ thống.
-  - Linux là case-sentitive
-    - **ABC** khác với **abc**
-  - Linux Kernel không phải là hệ điều hành. Nó là một "chương trình" nhỏ bên trong hệ điều hành Linux sẽ nhận command từ user và pass chúng vào phần cứng hệ thống.
-  - Linux phần lớn sử dụng CLI, không phải GUI.
-  - Linux rất flexible khi so với các hệ điều hành khác.
-  </details>
+1. **[Something that need to remember](module-03/important-things-to-remember.md)**
 
-- <details>
-  <summary>
-  <b>Linux File System</b>
-  </summary>
-  
-  - File System là một phần mềm hoặc hệ thống được sử dụng để quản lý, tổ chức và lưu trữ dữ liệu trên các thiết bị lưu trữ như đĩa cứng, ổ đĩa USB hoặc thẻ nhớ
-  - OS lưu trữ dữ liệu trên ổ đĩa sử dụng một cấu trúc gọi là File System, bao gồm các file, thư mục, và các thông tin cần thiết để truy cập và định vị chúng.
-  - Có nhiều loại filesystem khác nhau. Về cơ bản, có nhiều sự cải tiến đối với file system khi ra mắt các hệ điều hành mới, và mỗi file system được đặt một tên khác nhau:
-    - E.g ext3, ext4, XFS, NTFS, FAT, etc.
-  - Linux filesystem lưu trữ thông tin trong các thư mục phân cấp và file.
-    - Filesystem của Linux trông như thế này:
-  
-    ![img](images/Screenshot%20from%202024-08-19%2020-51-17.png)
+2. **[Linux File System](module-03/linux-file-system.md)**
 
-  </details>
+3. **[File System Structure and its Description](module-03/file-system-structure.md)**
 
-- <details>
-  <summary>
-  <b>File System Structure and its Description</b>
-  </summary>
+4. **[Navigating File System](module-03/navigating-file-system.md)**
 
-  - `/boot`: chứa file được sử dụng bởi bootloader (grub.cfg).
-  - `/root`: thư mục home của user root.
-  - `/dev`: System devices (eg disk, cdroom, speakers, flashdrive, keyboard etc)
-  - `/etc`: Configuration files.
-  - `/bin -> /usr/bin`: Everyday user commands.
-  - `/sbin -> /usr/sbin`: System/filesystem commands.
-  - `/opt`: optional addons applications (các apps không thuộc về OS).
-  - `/proc`: Chứa các file, thư mục cho các process đang chạy (bị xóa khi shutdown).
-  - `/lib -> /usr/lib`: các file thư viện được viết bằng C cần thiết cho các commands hoặc apps.
-  - `/tmp`: thư mục chứa các file tempory.
-  - `/home`: thư mục home của user.
-  - `/var`: logs của hệ thống.
-  - `/run`: các daemons hệ thống chạy rất sớm (e.g systemd và udev) để chứa các file tempory runtime như các file PID.
-  - `/mnt`: dùng để mount external filesystem. (e.g NFS)
-  - `/media`: dùng để mount cdrom.
+5. **[What is root](module-03/what-is-root.md)**
 
-  </details>
+6. **[Creating files, file types](module-03/creating-files-directories.md)**
 
-- <details>
-  <summary>
-  <b>Navigating File System</b>
-  </summary>
-  
-  Để di chuyển trong UNIX FileSystem, có một số command **quan trọng** cần phải nhớ:
-  - `cd - Change Directory`: chuyển thư mục
-  - `pwd - Print Working Directory`: Cho biết vị trí hiện tại
-  - `ls - listing`: List content
-    - `ls -a`: List tất cả (List all).
-    - `ls -l`: List đầy đủ thông tin (List long format).
-    - `ls -r`: List theo trật tự ngược lại (List with reverse order).
-    - `ls -t`: List theo thứ tự thời gian (List with time).
-    - `ls -p`: thêm dấu / vào thư mục. (List with indicator-slash)
-    - `ls -R`: xem cả cây thư mục (List recursively)
-  </details>
+7. **[Find files](module-03/find-files.md)**
 
-- <details>
-  <summary>
-  <b>What is root</b>
-  </summary>
-  
-  Có 3 loại `root` trong hệ thống Linux mà ta cần phân biệt:
-  - Root account: Là một account hay một username trên hệ thống Linux có quyền hạn lớn nhất, được access vào toàn bộ command và file.
-  - Thư mục root `/`: Là thư mục đầu tiên trong Linux và còn được biết đến là **root directory** (Lưu ý: đây không phải thư mục user của root).
-  - Root home directory: Là thư mục home của user `root`, nằm ở đường dẫn `/root`
-  </details>
+8. **[WildCards](module-03/wild-cards.md)**
 
-- <details>
-  <summary>
-  <b>Creating files and directories</b>
-  </summary>
-  
-  - Tạo file:
-    - `touch`: tạo file trống.
-    - `cp`: copy file.
-      - `cp -R`: copy đệ quy (copy recursively).
-    - `vi`: tạo file với trình soạn vi.
-  - Tạo thư mục:
-    - `mkdir`: tạo thư mục (make directory).
-      - `mkdir -p`: tạo cả cây thư mục (make directory parent).
-  </details>
-
-- <details>
-  <summary>
-  <b>Linux File Types</b>
-  </summary>
-
-  | Kí hiệu file | Ý nghĩa                     |
-  |--------------|-----------------------------|
-  | -            | Regular file                |
-  | d            | Directory                   |
-  | l            | link                        |
-  | c            | special file or device file |
-  | s            | socket                      |
-  | p            | Named pipe                  |
-  | b            | block device                |
-  </details>
-
-- <details>
-  <summary>
-  <b>Find files and directories</b>
-  </summary>
-
-  Hai lệnh được sử dụng để tìm kiếm file/thư mục:
-  - `find`: Tìm kiếm tài nguyên.
-    - `find <from_where> -name <search>`: Tìm kiếm tài nguyên theo tên tại from_where.
-    - `find <from_where> -type [f | d]`: Tìm kiếm tài nguyên là file (`f`) hoặc thư mục (`d`)
-  - `locate`: Tìm kiếm tài nguyên, nhưng là sử dụng cơ sở dữ liệu được lập chỉ mục trước (thường là `/var/lib/mlocate/mlocate.db`) nên rất nhanh.
-    - `updatedb`: cập nhật cơ sở dữ liệu chỉ mục.
-  </details>
-
-- <details>
-  <summary>
-  <b>Wildcards</b>
-  </summary>
-
-  Wildcards là các kí tự đặc biệt có thể sử dụng để đại diện cho một lớp các kí tự trong các câu lệnh tìm kiếm.
-
-  - `*`: Đại diện cho 0 hoặc nhiều hơn 1 kí tự.
-  - `?`: Đại diện cho một kí tự bất kì.
-  - `[]`: Đại diện cho một tập hợp các ký tự đơn lẻ mà bạn muốn khớp.
-  - `{}`: Đại diện cho một tập hợp các từ hoặc chuỗi (có thể sử dụng để tạo nhiều file)
-
-  Ví dụ:
-  - `rm abc*`: xóa tất cả các tài nguyên bắt đầu với `abc`.
-  - `touch abc{1..9}-xyz`: tạo 9 file `abc{1 -> 9}-xyz`.
-  </details>
-
-- <details>
-  <summary>
-  <b>Soft and hard links (In details)</b>
-  </summary>
-
-  **Một số khái niệm cần biết**:
-
-  Trong hệ thống file Linux, một liên kết (link) là một kết nối giữa file name và dữ liệu thực tế trên disk.
-
-  Có hai loại liên kết chính có thể được tạo: "hard" links, và "soft" hay symbolic links. Trước khi tìm hiểu về hard links và symbolic links, có một khái niệm khác cần hiểu rõ là “inode” - một khái niệm cơ bản trong Linux filesystem. Mỗi đối tượng của filesystem được đại diện bởi một inode.
-
-  **Inode**:
-  Trong Linux, dữ liệu của các file được chia thành các block. Có nhiều cách tổ chức để liên kết các khối dữ liệu trong một file với nhau, một trong các cách đó là dùng chỉ mục (indexed allocation).
-
-  ![alt text](images/123213218SDHUASHDUS.png)
-
-  Trong một inode có các metadata sau:
-  - Dung lượng file tính bằng bytes.
-  - Device ID : id của thiết bị lưu file.
-  - User ID : id chủ sở hữu của file.
-  - Group ID: id nhóm của chủ sở hữu file.
-  - File mode : gồm kiểu file và cách thức truy cập file.
-  - Timestamps: các mốc thời gian khi: bản thân inode bị thay đổi (ctime, inode change time), nội dung file thay đổi (mtime, modification time) và lần truy cập mới nhất (atime, access time).
-  - Link count : số lượng hard links trỏ đến inode. Các con trỏ chỉ đến các blocks trên ổ cứng dùng lưu nội dung file. Các con trỏ cho biết file nằm ở đâu để đọc nội dung.
-  - ...
-  
-  >Inode là một cấu trúc dữ liệu trong hệ thống tệp truyền thống của các họ Unix ví dụ như UFS hoặc EXT3. Inode lưu trữ thông tin về 1 tệp thông thường, thư mục, hay những đối tượng khác của hệ thống tệp tin.
-  
-  Có hai chú ý trong nội dung inode:
-  - Inode không chứa tên file, thư mục.
-  - Các con trỏ là thành phần quan trọng nhất: nó cho biết địa chỉ các block lưu nội dung file và tìm đến các block đó có thể truy cập được nội dung file.
-  
-  **Hard link**:
-  Hard Link là các liên kết cấp thấp (low-level links) mà hệ thống sử dụng để tạo các thành phần chính hệ thống file, chẳng hạn như file và thư mục. Liên kết cứng sẽ tạo ra một liên kết trong cùng hệ thống tập tin với 2 inode entry tương ứng trỏ đến cùng một nội dung vật lí (cùng số inode vì chúng trỏ đến cùng dữ liệu).
-
-  Tất cả các hệ thống tệp tin dựa trên thư mục phải có ít nhất một liên kết cứng (link counts từ 1 trở lên) cung cấp tên gốc cho mỗi tệp tin.
-
-  ![alt text](images/SDADUIJSA.png)
-  
-  **Symbolic Link**:
-  - Hầu hết người dùng không muốn tự tạo hoặc sửa đổi các hard links, nhưng các symbolic links là một công cụ hữu ích cho bất kỳ người dùng Linux nào.
-  - **Symbolic links** là một file đặc biệt trỏ đến một file hoặc thư mục khác - được gọi là target. Khi được tạo, một symbolic links có thể được sử dụng thay cho target file. Nó có thể có một tên độc nhất, và được đặt trong bất kỳ thư mục nào. Nhiều symbolic links thậm chí có thể được tạo cho cùng một target file, cho phép truy cập target bằng nhiều tên khác nhau.
-  
-  ![alt text](images/sDSAASD.png)
-
-  - Symbolic link không chứa bản sao dữ liệu của target file. Nó tương tự như một shortcut trong Microsoft Windows: nếu bạn xóa một symbolic link, target sẽ không bị ảnh hưởng. Vì chỉ đơn thuần là một shortcut, symbolic link không dùng đến inode entry. Nó sẽ tạo ra một inode mới và nội dung của inode này trỏ đến tên tập tin gốc.
-  - Ngoài ra, nếu target của một symbolic link bị xóa, di chuyển hoặc đổi tên, symbolic link không được cập nhật. Khi điều này xảy ra, liên kết tượng trưng được gọi là "broken" hoặc "orphaned" và sẽ không còn hoạt động như một liên kết.
-
-  Lệnh:
-  - `ln`: tạo hard link.
-  - `ln -s`: tạo soft link.
-
-  ![img](images/saidjsadsad1273111.png)
-
-  </details>
-</details>
+9. **[Soft and hard links in details](module-03/soft-and-hard-links-in-details.md)**
 
 <details>
 <summary>
