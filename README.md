@@ -1682,6 +1682,8 @@
 2. **[Network Devices - Hub, Bridge, Switch, Router](s-module-02/hub-bridge-switch-router.md)**
    
 3. **[OSI Model In Practical Perspective - L1, L2, L3](s-module-02/osi-practical-perspective.md)**
+
+4. **[OSI Model In Practical Perspective - L4](s-module-02/osi-practical-perspective-2.md)**
    
 4. **[What is OSI model](s-module-02/what-is-osi-model.md)**
 </details>
