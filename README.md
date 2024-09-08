@@ -1663,6 +1663,13 @@
 </details>
 <details>
 <summary>
+<b>Module 7 - Networking</b>
+</summary>
+
+1. **[Difference Network Modes in VMWare](module-07/network-modes-in-vm.md)**
+</details>
+<details>
+<summary>
 <b>Sub Module 1 - OS Refresher</b>
 </summary>
 
@@ -1685,5 +1692,5 @@
 
 4. **[OSI Model In Practical Perspective - L4](s-module-02/osi-practical-perspective-2.md)**
    
-4. **[What is OSI model](s-module-02/what-is-osi-model.md)**
+5. **[What is OSI model](s-module-02/what-is-osi-model.md)**
 </details>
