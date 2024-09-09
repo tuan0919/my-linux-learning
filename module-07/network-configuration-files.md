@@ -76,3 +76,30 @@ Nếu chúng ta muốn sử dụng DNS server, thì không được update file 
 
 ## File /etc/resolv.conf
 
+Linux lưu trữ thông tin địa chỉ của DNS Server bên trong file **/etc/resolv.conf**. Mặc định thì file này không tồn tại. Linux tự động tạo ra và update file này khi chúng ta cấu hình địa chỉ IP cho DNS server. Khi chúng ta cấu hình hoặc thay đổi địa chỉ IP của DNS server, Linux lưu nó dưới dạng một *file cấu hình mạng* (network configuration file) ở thư mục **etc/sysconfig/network-scripts/** và đẩy các cấu hình đến **/etc/resolv.conf**. Vì Linux sẽ tự động cập nhật file này, chúng ta không nên sửa đổi file 1 cách thủ công.
+
+Nếu chúng ta chủ động sửa đổi file này, những thay đổi đó chỉ áp dụng khi chúng ta không restart NetworkManager. Khi restart NetworkManager, nó sẽ tự động cập nhật lại file dựa vào các cấu hình được lưu trong *file cấu hình mạng* (network configuration file).
+
+## File /etc/hostname
+
+Có 3 loại hostname: **static**, **pretty** và **transient**. Các service chạy trên local system sử dụng **static** hostname để đại diện cho host. Nếu hệ thống được kết nối với mạng, các service chạy trên máy tính khác sử dụng **transient** hostname để đại diện cho host. Còn người dùng sẽ sử dụng **pretty** hostname để đại diện cho host.
+
+Trong các loại hostname, static hostname là quan trọng nhất và Linux luôn cần có nó. Nếu không có static hostname được đặt thủ công, Linux sẽ sử dụng giá trị mặc định là `localhost.localdomain`.
+
+Linux lưu trữ static hostname trong file **/etc/hostname**. Chúng ta có thể trực tiếp thay đổi file này hoặc sử dụng **hostnamectl**
+
+![img](/images/module-07/lt53-08-hostname.png)
+
+## File /etc/sysconfig/network
+
+File **/etc/sysconfig/network** trên hệ điều hành Linux (đặc biệt là các bản phân phối dựa trên Red Hat như CentOS, RHEL) chứa các cấu hình liên quan đến cài đặt mạng toàn cục của hệ thống. Mục đích của file này là thiết lập các tùy chọn mạng cơ bản khi hệ thống khởi động.
+
+**Chú ý:**
+
+Vai trò của **/etc/sysconfig/network** có một chút khác biệt so với **/etc/sysconfig/network-scripts/**, cụ thể:
+
+|/etc/sysconfig/network|/etc/sysconfig/network-scripts/*|
+|----------------------|--------------------------------|
+|Đây là file cấu hình mạng toàn cục của hệ thống|Các file trong thư mục này, chẳng hạn như ifcfg-eth0, ifcfg-ens33, chứa **cấu hình cho từng giao diện mạng** cụ thể (như Ethernet, Wi-Fi).|
+|Nó chứa các thiết lập tổng quát, ảnh hưởng đến **toàn bộ hệ thống**, như bật/tắt mạng, đặt hostname, và chỉ định gateway mặc định.|Mỗi file cấu hình ở đây đại diện cho một giao diện mạng (interface) và chỉ định cách giao diện đó kết nối với mạng.|
+Các thông số trong file này thường áp dụng cho toàn bộ hệ thống khi khởi động.|Các file này chứa các cài đặt như địa chỉ IP, subnet mask, gateway của từng giao diện mạng cụ thể.|
