@@ -1667,7 +1667,10 @@
 </summary>
 
 1. **[Difference Network Modes in VMWare](module-07/network-modes-in-vm.md)**
+  
 2. **[Network Configuration Files in Linux](module-07/network-configuration-files.md)**
+
+3. **[Predictable Consistent Network Device Naming](module-07/network-predictable.md)**
 </details>
 <details>
 <summary>
