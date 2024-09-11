@@ -1,13 +1,20 @@
 ## Lệnh ip hay dùng
 
+ip commands là lệnh rất hay được dùng để thao tác với các tác vụ liên quan đến layer 3 (Transport), lệnh này tương đối mới và hiện đang là giải pháp thay thế cho nhiều lệnh khác cũ hơn.
+
 - List địa chỉ ip: 
   
   `ip addr show`
 - Thêm một địa chỉ ip khác vào interface: 
   
   `ip addr add <ip_address>/<subnet_mask> dev <interface>`
+
+- Bật/ tắt một interface
+
+  `ip link set <interface> down/up`
+
 - Xóa địa chỉ ip ra khỏi interface:
-  
+
   `ip addr del <ip_address>/<subnet_mask> dev <interface>`
 - Kiểm tra routing table:
 
