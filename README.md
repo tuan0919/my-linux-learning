@@ -91,6 +91,8 @@
 
 4. **[Jobs and Job Control in Linux](module-05/jobs-in-linux.md)**
 
+</details>
+
 <details>
 <summary>
 <b>Module 6 - Shell Scripting</b>
