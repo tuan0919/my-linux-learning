@@ -1672,7 +1672,7 @@
 
 3. **[Predictable Consistent Network Device Naming](module-07/network-predictable.md)**
 
-4. **[Managing IP Address with ip command]()**
+4. **[Managing IP Address with ip command](module-07/ip-address-managing-with-ip-command.md)**
 </details>
 <details>
 <summary>
