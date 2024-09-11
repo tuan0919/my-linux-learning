@@ -1671,6 +1671,8 @@
 2. **[Network Configuration Files in Linux](module-07/network-configuration-files.md)**
 
 3. **[Predictable Consistent Network Device Naming](module-07/network-predictable.md)**
+
+4. **[Managing IP Address with ip command]()**
 </details>
 <details>
 <summary>
@@ -1683,6 +1685,7 @@
   
 3. **[Thread in OS](s-module-01/thread-in-os.md)**
 </details>
+
 <details>
 <summary>
 <b>Sub Module 2 - Network Refresher</b>
