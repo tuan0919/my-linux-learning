@@ -65,17 +65,11 @@ thuc hành voi lien ket. Kiểm tra nội dung hard và soft link
 - Kiểm tra thông tin partition vừa tạo với lệnh `lsblk`, Thấy được `sdb` có một partiton là `sdb1` là thành công.
 #### 3. Định dang filesystem ext3 cho partition mới
 
-- Sử dụng lệnh `mkfs -t ext3 /dev/sdb1` (make file system) để chỉ định ext3 làm file system cho partiton sdb1.
-  
-  ![img](/images/qtm/VirtualBox_Centos%207_10_09_2024_01_1.png)
-
-#### 4. Mount tự động partition mới vao hệ thống vơi mount point là /home
-
-- Để mount partition tự động, chỉnh sửa file `/etc/fstab` với lệnh `vi /etc/fstab`:
+- Sử dụng lệnh `mkfs -t ext3 /dev/sdb1` (make file system) để chỉ định ext3 làm file systesystemctl restart network
   - Thêm dòng này vào:
   
   ```sh
-  /dev/sdb1 /home   ext3    defaults    1   1
+  /dev/sdb1 /homesystemctl restart network   ext3    defaults    1   1
   ```
 
   ![img](/images/qtm/VirtualBox_Centos%207_10_09_2024_01_33_39.png)
